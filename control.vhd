@@ -2,110 +2,36 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-entity control_unit is
-	port (
-		--input op code
-		op_code : in std_logic_vector (5 downto 0);
+entity control is
+port(
+	clock : in std_logic;
+	instruction : in std_logic_vector(5 downto 0);
+	op_code : out std_logic_vector(5 downto 0);
+	branch : out std_logic;
+	mem_read : out std_logic;
+	mem_to_reg : out std_logic;
+	mem_write : out std_logic;
+	alu_src : out std_logic_vector(15 downto 0);
+	reg_write : out std_logic_vector(4 downto 0)
+);
 
-		reg_dst_o : out std_logic;
-		br_o : out std_logic;
-		j_o : out std_logic;
-		mem_read_o : out std_logic;
-		mem_write_o : out std_logic;
+end control;
 
-		--ALU control
-		alu_op_o : out std_logic_vector(4 downto 0);
-		alu_src_o : out std_logic;
+architecture arch of control is
 
-		reg_write_o : out std_logic;
-
-		clk : std_logic
-	);
-end control_unit;
-
-architecture behavioral of control_unit is
 begin
-	op := ("00"&op_code);
-	case op is
-		--ADD
-		when 'X"00"' => reg_dst_o <= '1';
-					br_o <= '0';
-					j_o <= '0';
-					mem_read_o <= '0';
-					mem_write_o <= '0';
-					alu_op_o <= "00001";
-					alu_src_o <= '0';
-					reg_write_o <= '1';
 
-		--SUB		
-		when '2' => reg_dst_o <= '1';
-					br_o <= '0';
-					j_o <= '0';
-					mem_read_o <= '0';
-					mem_write_o <= '0';
-					alu_op_o <= "00010";
-					alu_src_o <= '0';
-					reg_write_o <= '1';
+process(clock)
 
-		--ADDI
-		when '3' => reg_dst_o <= '1';
-					br_o <= '0';
-					j_o <= '0';
-					mem_read_o <= '0';
-					mem_write_o <= '0';
-					alu_op_o <= "00010";
-					alu_src_o <= '0';
-					reg_write_o <= '1';
+begin
 
-		--MULTI
+if(rising_edge(clock)) then
+	op_code <= instruction;
+	
+	
+end if;
 
-		--DIV
 
-		--SLT
+end process;
 
-		--SLTI
-
-		--AND
-
-		--OR
-
-		--NOR
-
-		--XOR
-
-		--ANDI
-
-		--ORI
-
-		--XORI
-
-		--MFHI
-
-		--MFLO
-
-		--LUI
-
-		--SLL
-
-		--SRL
-
-		--SRA
-
-		--LW
-
-		--SW
-
-		--BEQ
-
-		--BNE
-
-		--J
-
-		--JR
-
-		--JAL
-					
-
-	end case;
-	end process;
-end behavioral;
+end arch;

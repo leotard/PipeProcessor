@@ -19,19 +19,12 @@ architecture arch of MUXFIVE is
 
 begin
 
-if(rising_edge(clock)) then
-	if(control = "000") then
-		output <= A;
-	elsif(control = "001") then
-		output <= B;
-	elsif(control = "010") then
-		output <= C;
-	elsif(control = "011") then
-		output <= D;
-	elsif(control = "100") then
-		output <= E;
-	end if;
-end if;
+  output <= A when control = "000" else
+            B when control = "001" else
+            C when control = "010" else
+            D when control = "011" else
+            E;
+          
 
 
 end arch;
