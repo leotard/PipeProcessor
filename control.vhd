@@ -12,6 +12,7 @@ entity control is
 		reg_dst : out std_logic;
 		bne : out std_logic;
 		jump : out std_logic;
+		jr : out std_logic;
 		branch : out std_logic;
 		LUI : out std_logic;
 		alu_lh_w : out std_logic;
@@ -157,7 +158,7 @@ mem_reg <= mem_reg_t;
 					when "001000" =>
 						alu_op_t <= "XXXXX";
 						jr_t <= '1';
-						j_t <= '1';
+						jump_t <= '1';
 
 					when others => null;
 				end case;
