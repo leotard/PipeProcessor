@@ -39,7 +39,7 @@ end control;
 architecture arch of control is
 signal reg_r_t, reg_w_t, alu_src_t, reg_dst_t, mem_w_t, mem_r_t, mem_reg_t : std_logic;
 signal branch_t, bne_t : std_logic;
-signal jump_t, LUI_t : std_logic;
+signal jump_t, jr_t, LUI_t : std_logic;
 signal alu_lh_w_t : std_logic := '0';
 signal alu_lh_r_t : std_logic_vector(1 downto 0) := "00";
 signal alu_op_t : std_logic_vector(4 downto 0);
@@ -54,6 +54,7 @@ reg_dst <= reg_dst_t;
 branch <= branch_t;
 bne <= bne_t;
 jump <= jump_t;
+jr <= jr_t;
 LUI <= LUI_t;
 alu_lh_r <= alu_lh_r_t;
 alu_lh_w <= alu_lh_w_t;
@@ -73,6 +74,7 @@ mem_reg <= mem_reg_t;
 		branch_t	<= '0';
 		bne_t		<= '0';
 		jump_t		<= '0';
+		jr_t		<= '0';
 		LUI_t		<= '0';
 		alu_lh_r_t	<= "00";
 		alu_lh_w_t	<= '0';
@@ -151,6 +153,12 @@ mem_reg <= mem_reg_t;
 					when "000011" =>
 						alu_op_t <= "01010";
 
+					--jr
+					when "001000" =>
+						alu_op_t <= "XXXXX";
+						jr_t <= '1';
+						j_t <= '1';
+
 					when others => null;
 				end case;
 
@@ -217,7 +225,7 @@ mem_reg <= mem_reg_t;
 			when "101011" =>
 				alu_src_t <= '1';
 				alu_op_t <= "";
-				mem_r_t <= '1';	
+				mem_w_t <= '1';	
 
 			--beq
 			when "000100" =>
@@ -235,11 +243,6 @@ mem_reg <= mem_reg_t;
 			when "000010" =>
 				alu_op_t <= "XXXXX";
 				jump_t <= '1';
-
-			--jr
-			when "XXXXXX" =>
-				reg_w_t <= 'X';
-				alu_op_t <= "XXXXX";
 
 			--jal
 			when "000011" =>
