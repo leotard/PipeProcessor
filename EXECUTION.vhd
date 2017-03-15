@@ -46,12 +46,26 @@ COMPONENT ALU is
 	);
 end component;
 
-COMPONENT DEST_MUX is
+COMPONENT DEST_MUX_comp is
 	port(
 		control : in std_logic;
 		A : in std_logic_vector(4 downto 0);
 		B : in std_logic_vector(4 downto 0);
 		output : out std_logic_vector(4 downto 0)
+	);
+end component;
+
+COMPONENT EX_MEM_REG is
+	port(
+		clock : in std_logic;
+		PC_adder_shifter_new : in std_logic_vector(31 downto 0);
+		ALU_zero_new : in std_logic;
+		ALU_result_new : in std_logic_vector(31 downto 0);
+		dest_reg_new : in std_logic_vector(4 downto 0);
+		PC_adder_shifter_out : out std_logic_vector(31 downto 0);
+		ALU_zero_out : out std_logic;
+		ALU_result_out : out std_logic_vector(31 downto 0);
+		dest_reg_out : out std_logic_vector(4 downto 0)
 	);
 end component;
 
@@ -67,7 +81,7 @@ signal imm_new: std_logic_vector(31 downto 0);
 
 begin
 
-REG_DEST: DEST_MUX port map (dest_reg_sel, dest_reg1, dest_reg2, selected_dest);
+REG_DEST: DEST_MUX_comp port map (dest_reg_sel, dest_reg1, dest_reg2, selected_dest);
 
 ALU_COMP : ALU port map(read_data1, read_data2, imm, alu_op, alu_src, alu_output, zero_out);
 
