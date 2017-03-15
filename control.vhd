@@ -210,14 +210,14 @@ mem_reg <= mem_reg_t;
 				alu_src_t <= '1';
 				alu_op_t <= "";
 				reg_dst_t <= '0';
-				mem_r <= '1';
+				mem_r_t <= '1';
 				mem_reg_t <= '1';
 
 			--sw
 			when "101011" =>
 				alu_src_t <= '1';
 				alu_op_t <= "";
-				mem_reg_t <= '1';	
+				mem_r_t <= '1';	
 
 			--beq
 			when "000100" =>
