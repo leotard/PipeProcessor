@@ -16,7 +16,7 @@ entity control is
 		LUI : out std_logic;
 		alu_lh_w : out std_logic;
 		--set 00 to return, 01 to low, 10 to high
-		alu_lh_r : out std_logic vector(1 downto 0);
+		alu_lh_r : out std_logic_vector(1 downto 0);
 
 		--ALU control
 		alu_op : out std_logic_vector(4 downto 0);
@@ -37,14 +37,15 @@ entity control is
 end control;
 
 architecture arch of control is
-signal reg_w_t, alu_src_t, alu_op_t : std_logic;
+signal reg_r_t, reg_w_t, alu_src_t, reg_dst_t, mem_w_t, mem_r_t, mem_reg_t : std_logic;
 signal branch_t, bne_t : std_logic;
 signal jump_t, LUI_t : std_logic;
 signal alu_lh_w_t : std_logic := '0';
 signal alu_lh_r_t : std_logic_vector(1 downto 0) := "00";
-signal alu_op : std_logic_vector(3 downto 0);
+signal alu_op_t : std_logic_vector(4 downto 0);
 
 begin
+
 
 reg_w <= reg_w_t;
 alu_src <= alu_src_t;
@@ -73,8 +74,8 @@ mem_reg <= mem_reg_t;
 		bne_t		<= '0';
 		jump_t		<= '0';
 		LUI_t		<= '0';
-		alu_lh_r_t	<= '0';
-		alu_lh_w_t	<= "00";
+		alu_lh_r_t	<= "00";
+		alu_lh_w_t	<= '0';
 		mem_w_t		<= '0';
 		mem_r_t 	<= '0';
 		mem_reg_t	<= 'X';
@@ -90,65 +91,65 @@ mem_reg <= mem_reg_t;
 				case instruction is
 					--add
 					when "100000" =>
-						alu_op_t <= "";
+						alu_op_t <= "00000";
 
 					--sub
 					when "100010" =>
-						alu_op_t <= "";
+						alu_op_t <= "00001";
 
 					--mult
 					when "011000" =>
-						alu_op_t <= "";
+						alu_op_t <= "00010";
 						reg_w_t <= '0';
 						alu_lh_w_t <= '1';
 
 					--div
 					when "011010" =>
 						reg_w_t <= '0';
-						alu_op_t <= "";
+						alu_op_t <= "00011";
 						alu_lh_w_t <= '1';
 
 					--slt
 					when "101010" =>
-						alu_op_t <= "";
+						alu_op_t <= "01101";
 
 					--and
 					when "100100" =>
-						alu_op_t <= "";
+						alu_op_t <= "00100";
 
 					--or
 					when "100101" =>
-						alu_op_t <= "";
+						alu_op_t <= "00101";
 
 					--nor
 					when "100111" =>
-						alu_op_t <= "";
+						alu_op_t <= "00110";
 
 					--xor
 					when "101000" =>
-						alu_op_t <= "";
+						alu_op_t <= "00111";
 
 					--mfhi
 					when "010000" =>
-						alu_op_t <= "";
+						alu_op_t <= "10000";
 						alu_lh_r_t <= "10";
 
 					--mflo
 					when "010010" =>
-						alu_op_t <= "";
+						alu_op_t <= "10001";
 						alu_lh_r_t <= "01";
 
 					--sll
 					when "000000" =>
-						alu_op_t <= "";
+						alu_op_t <= "01000";
 
 					--srl
 					when "000010" =>
-						alu_op_t <= "";
+						alu_op_t <= "01001";
 
 					--sra
 					when "000011" =>
-						alu_op_t <= "";
+						alu_op_t <= "01010";
 
 					when others => null;
 				end case;
@@ -158,7 +159,7 @@ mem_reg <= mem_reg_t;
 			when "001000" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "00000";
 				reg_dst_t <= '0';
 				mem_reg_t <= '0';
 
@@ -166,7 +167,7 @@ mem_reg <= mem_reg_t;
 			when "001100" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "00100";
 				reg_dst_t <= '0';
 				mem_reg_t <= '0';
 
@@ -174,7 +175,7 @@ mem_reg <= mem_reg_t;
 			when "001101" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "00101";
 				reg_dst_t <= '0';
 				mem_reg_t <= '0';
 
@@ -182,7 +183,7 @@ mem_reg <= mem_reg_t;
 			when "001110" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "00111";
 				reg_dst_t <= '0';
 				mem_reg_t <= '0';
 
@@ -190,7 +191,7 @@ mem_reg <= mem_reg_t;
 			when "001111" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "01111";
 				reg_dst_t <= '0';
 				LUI_t <= '1';
 				mem_reg_t <= '0';
@@ -199,7 +200,7 @@ mem_reg <= mem_reg_t;
 			when "001010" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "01101";
 				reg_dst_t <= '0';
 				mem_reg_t <= '0';
 
@@ -220,30 +221,30 @@ mem_reg <= mem_reg_t;
 
 			--beq
 			when "000100" =>
-				alu_op_t <= "";
+				alu_op_t <= "01011";
 				branch_t <= '1';
 
 			--bne
 			when "000101" =>
-				alu_op_t <= "";
+				alu_op_t <= "01100";
 				branch_t <= '1';
 				bne <= '1';
 
 			--J type
 			--j
 			when "000010" =>
-				alu_op_t <= "";
-				jump_t <= '';
+				alu_op_t <= "XXXXX";
+				jump_t <= '1';
 
 			--jr
-			when "001000" =>
-				reg_r_t <= '1';
-				alu_op_t <= "";
+			when "XXXXXX" =>
+				reg_w_t <= 'X';
+				alu_op_t <= "XXXXX";
 
 			--jal
 			when "000011" =>
 				reg_w_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "XXXXX";
 				jump_t <= '1';
 
 			when others => null;
