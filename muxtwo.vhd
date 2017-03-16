@@ -14,9 +14,20 @@ end MUXTWO;
 
 architecture arch of MUXTWO is
 
+signal control_t: std_logic;
+
 begin
 
-  output <= A when control = '1' else
+process(control)
+begin
+	if(control = '1')then
+		control_t <= '1';
+	else
+		control_t <= '0';
+	end if;
+end process;
+
+output <= A when control_t = '1'  else
             B;
 end arch;
 

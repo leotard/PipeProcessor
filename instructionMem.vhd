@@ -47,12 +47,13 @@ end function;
 	signal instr_set    : instr_set_t    := readMemFile("program.txt");
     
 BEGIN
-    
+   
    --Read process
     process (PC)
 	variable pc_integer: integer;
 	begin
 		pc_integer:=to_integer(unsigned(PC));
+		pc_integer:= pc_integer/4;
 		instr_reg <= instr_set(pc_integer);
     end process;
 
