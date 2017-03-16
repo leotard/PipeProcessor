@@ -7,11 +7,10 @@ port(
 	clock : in std_logic;
 
 	--signals in
-	instruction_old : in std_logic_vector(31 downto 0);
-	address_old : in std_logic_vector(31 downto 0);
+	instruction_in : in std_logic_vector(31 downto 0);
+	address_in : in std_logic_vector(31 downto 0);
 	--hazard detection
 	IF_ID_forward : in std_logic :='1';
-
 	--signals out
 	instruction_out : out std_logic_vector(31 downto 0);
 	address_out : out std_logic_vector(31 downto 0)

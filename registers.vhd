@@ -23,7 +23,7 @@ entity register_lib is
 	);
 end register_lib;
 
-arcitecture behavioral of register_lib is 
+architecture behavioral of register_lib is 
 	type registers is array(0 to 33) of std_logic_vector(31 downto 0);
 	signal register : registers;
 	signal rd1_t, rd2_t, alu_lo_out_t, alu_lo_in_t : std_logic_vector(31 downto 0);
@@ -33,7 +33,7 @@ begin
 rd1_t <= rd1;
 rd2_t <= rd2;
 alu_lo_out_t <= alu_lo_out;
-alu_hi_out_t <= alu_hi_out_t;
+alu_hi_out_t <= alu_hi_out;
 
 	regFile : process (clk) is
 	begin
@@ -57,7 +57,8 @@ alu_hi_out_t <= alu_hi_out_t;
 				if alu_lh_r = '1' then
 					register(32) <= alu_lo_in;
 					register(33) <= alu_hi_in;
-
+				end if;
+				
 				-- make register(0) read only
 				if wr = '0' then
 					wd <= wd;
