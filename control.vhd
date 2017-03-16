@@ -22,6 +22,7 @@ entity control is
 		--ALU control
 		alu_op : out std_logic_vector(4 downto 0);
 		alu_src : out std_logic;
+		shamt : out std_logic;
 
 		--memory operations
 		mem_r : out std_logic;
@@ -44,6 +45,7 @@ signal jump_t, jr_t, LUI_t : std_logic;
 signal alu_lh_w_t : std_logic := '0';
 signal alu_lh_r_t : std_logic_vector(1 downto 0) := "00";
 signal alu_op_t : std_logic_vector(4 downto 0);
+signal shamt_t : std_logic;
 
 begin
 
@@ -62,6 +64,7 @@ alu_lh_w <= alu_lh_w_t;
 mem_w <= mem_w_t;
 mem_r <= mem_r_t;
 mem_reg <= mem_reg_t;
+shamt <= shamt_t;
 
 	process(clock, op_code, instruction)
 	begin
@@ -82,6 +85,7 @@ mem_reg <= mem_reg_t;
 		mem_w_t		<= '0';
 		mem_r_t 	<= '0';
 		mem_reg_t	<= 'X';
+		shamt_t <= '0';
 
 
 		case op_code is
@@ -153,6 +157,7 @@ mem_reg <= mem_reg_t;
 					--sra
 					when "000011" =>
 						alu_op_t <= "01010";
+						shamt_t <= '1';
 
 					--jr
 					when "001000" =>

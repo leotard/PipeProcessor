@@ -41,6 +41,7 @@ entity ID_EX is
 		mem_w_in : in std_logic;
 		reg_w_in : in std_logic;
 		mem_reg_in : in std_logic;
+		shamt_in : in std_logic;
 
 
 		reg_dst_out : out std_logic;
@@ -56,12 +57,14 @@ entity ID_EX is
 		mem_r_out : out std_logic;
 		mem_w_out : out std_logic;
 		reg_w_out : out std_logic;
-		mem_reg_out : out std_logic
+		mem_reg_out : out std_logic;
+		shamt_out : out std_logic
     );
 end entity;
 
 architecture behavior of ID_EX is
 
+--setup registers
 signal address_t	: std_logic_vector(31 downto 0);
 signal rd1_t		: std_logic_vector(31 downto 0);
 signal rd2_t		: std_logic_vector(31 downto 0);
@@ -85,6 +88,7 @@ signal mem_r_t : std_logic;
 signal mem_w_t : std_logic;
 signal reg_w_t : std_logic;
 signal mem_reg_t : std_logic;
+signal shamt_t : std_logic;
 
 BEGIN
 --forward
@@ -111,6 +115,7 @@ BEGIN
 	mem_w_t <= mem_w_in;
 	reg_w_t <= reg_w_in;
 	mem_reg_t <= mem_reg_in;
+	shamt_t <= shamt_in;
 
 process (clock)
 	begin
@@ -139,6 +144,8 @@ process (clock)
 		mem_w_out <= mem_w_t;
 		reg_w_out <= reg_w_t;
 		mem_reg_out <= mem_reg_t;
+		shamt_out <= shamt_t;
+
 	end if;
 end process;
 
