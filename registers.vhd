@@ -25,26 +25,27 @@ end register_lib;
 
 architecture behavioral of register_lib is 
 	type registers is array(0 to 33) of std_logic_vector(31 downto 0);
-	signal register : registers;
-	signal rd1_t, rd2_t, alu_lo_out_t, alu_lo_in_t : std_logic_vector(31 downto 0);
+	signal reg : registers;
+	signal rd1_t, rd2_t, alu_lo_out_t, alu_hi_out_t : std_logic_vector(31 downto 0);
 
 begin
 
-rd1_t <= rd1;
-rd2_t <= rd2;
-alu_lo_out_t <= alu_lo_out;
-alu_hi_out_t <= alu_hi_out;
+rd1 <= rd1_t;
+rd2 <= rd2_t;
+alu_lo_out <= alu_lo_out_t;
+alu_hi_out <= alu_hi_out_t;
 
-	regFile : process (clk) is
+ 	process (clk) is
 	begin
+		reg(0) <= (others => '0');
 		if (clk'event and clk = '1') then
-			rd1_t <= register(to_integer(unsigned(rr1)));
-			rd2_t <= register(to_integer(unsigned(rr2)));
-			alu_lo_out_t <= register(32);
-			alu_hi_out_t <= register(33);
+			rd1_t <= reg(to_integer(unsigned(rr1)));
+			rd2_t <= reg(to_integer(unsigned(rr2)));
+			alu_lo_out_t <= reg(32);
+			alu_hi_out_t <= reg(33);
 
 			if writeEnable = '1' then
-				register(to_integer(unsigned(wr))) <= wd;
+				reg(to_integer(unsigned(wr))) <= wd;
 
 				if rr1 = wr then
 					rd1 <= wd;
@@ -55,15 +56,9 @@ alu_hi_out_t <= alu_hi_out;
 				end if;
 
 				if alu_lh_r = '1' then
-					register(32) <= alu_lo_in;
-					register(33) <= alu_hi_in;
+					reg(32) <= alu_lo_in;
+					reg(33) <= alu_hi_in;
 				end if;
-				
-				-- make register(0) read only
-				if wr = '0' then
-					wd <= wd;
-				end if;
-
 			end if;
 		end if;
 	end process;

@@ -137,3 +137,6 @@ port(
 	new_pc : out std_logic_vector(31 downto 0)
 );
 end component;
+
+begin
+
