@@ -8,7 +8,7 @@ entity register_lib is
 		rd2 : out std_logic_vector(31 downto 0);
 		rr1 : in std_logic_vector(4 downto 0);
 		rr2 : in std_logic_vector(4 downto 0);
-		alu_lh_r : in std_logic;
+		alu_lh_w : in std_logic;
 
 		alu_lo_in : in std_logic_vector(31 downto 0);
 		alu_hi_in : in std_logic_vector(31 downto 0);
@@ -55,7 +55,7 @@ alu_hi_out <= alu_hi_out_t;
 					rd2 <= wd;
 				end if;
 
-				if alu_lh_r = '1' then
+				if alu_lh_w = '1' then
 					reg(32) <= alu_lo_in;
 					reg(33) <= alu_hi_in;
 				end if;
