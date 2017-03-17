@@ -1,10 +1,7 @@
 proc AddWaves {} {
 	;#Add waves we're interested in to the Wave window
-    add wave -position end sim:/processor_tb/clock
-    add wave -position end sim:/processor_tb/instruction_out1
-    add wave -position end sim:/processor_tb/wr_in1
-     add wave -position end sim:/processor_tb/wd_in1
-    add wave -position end sim:/processor_tb/regWrite_in1
+    add wave -position end sim:/processor_tb/clk
+    
    
 
 }
@@ -23,6 +20,10 @@ vcom ID_EX.vhd
 vcom processor_tb.vhd
 vcom sign_extender.vhd
 vcom instructiondecode.vhd
+vcom instructionfetch.vhd
+vcom muxtwo.vhd
+vcom instructionmem.vhd
+vcom PC_adder.vhd
 
 ;# Start simulation
 vsim processor_tb

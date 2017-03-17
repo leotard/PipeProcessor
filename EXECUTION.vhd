@@ -16,10 +16,18 @@ port(
 	dest_reg1 : in std_logic_vector(4 downto 0);
 	dest_reg2 : in std_logic_vector(4 downto 0);
 	dest_reg_sel : in std_logic;
-	selected_dest : out std_logic_vector(4 downto 0);
+	selected_dest_out : out std_logic_vector(4 downto 0);
 	zero_out : out std_logic;
 	alu_output : out std_logic_vector(31 downto 0);
-	new_pc : out std_logic_vector(31 downto 0)
+	new_pc_out : out std_logic_vector(31 downto 0);
+	
+	branch_in, memRead_in, memToReg_in, memWrite_in, reg_write_in: in std_logic;
+	
+	BNE_in, Jump_in, LUI_in, jr_in : in std_logic;
+	
+	branch_out, memRead_out, memToReg_out, memWrite_out, reg_write_out: out std_logic;
+	
+	BNE_out, Jump_out, LUI_out, jr_out : out std_logic
 );
 
 end EXECUTION;
@@ -80,14 +88,55 @@ signal ALU_input_2: std_logic_vector(31 downto 0);
 signal read_data2_new: std_logic_vector(31 downto 0);
 signal imm_new: std_logic_vector(31 downto 0);
 
+signal EX_MEM_REG_PC, new_pc_new : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
+signal EX_MEM_REG_ALU_zero, zero_out_new : std_logic := '0';
+signal EX_MEM_REG_ALU_result, alu_output_new : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
+signal EX_MEM_REG_dest_reg, selected_dest_new : std_logic_vector(4 downto 0) := "00000";
+signal branch_EX_MEM, memRead_EX_MEM, memToReg_EX_MEM, memWrite_EX_MEM, regWrite_EX_MEM : std_logic := '0';
+
+signal branch_in_ID_EX, memRead_in_ID_EX, memToReg_in_ID_EX, memWrite_in_ID_EX, reg_write_in_ID_EX : std_logic;
+signal BNE_in_ID_EX, Jump_in_ID_EX, LUI_in_ID_EX, jr_in_ID_EX : std_logic;
 
 begin
+  
+  
 
-REG_DEST: DEST_MUX_comp port map (dest_reg_sel, dest_reg1, dest_reg2, selected_dest);
+REG_DEST: DEST_MUX_comp port map (dest_reg_sel, dest_reg1, dest_reg2, selected_dest_new);
 
-ALU_COMP : ALU port map(read_data1, read_data2, imm, shamt, alu_op, alu_src, alu_output, zero_out);
+ALU_COMP : ALU port map(read_data1, read_data2, imm, shamt, alu_op, alu_src, alu_output_new, zero_out_new);
 
-PC_ADDER_SHIFTER_COMP : PC_ADDER_SHIFTER port map(imm, pc, new_pc);
+PC_ADDER_SHIFTER_COMP : PC_ADDER_SHIFTER port map(imm, pc, new_pc_new);
+  
+process(clock)
+  
+  begin
+    
+    if(rising_edge(clock)) then
+        alu_output <= EX_MEM_REG_ALU_result;
+        zero_out <= EX_MEM_REG_ALU_zero;
+        new_pc_out <= EX_MEM_REG_PC;
+        selected_dest_out <= EX_MEM_REG_dest_reg;
+        
+        branch_out <= branch_in_ID_EX;
+        memRead_out <= memRead_in_ID_EX;
+        memToReg_out <= memToReg_in_ID_EX;
+        memWrite_out <= memWrite_in_ID_EX; 
+        reg_write_out <= reg_write_in_ID_EX;
+        
+    elsif(falling_edge(clock)) then
+        EX_MEM_REG_ALU_result <= alu_output_new;
+        EX_MEM_REG_ALU_zero <= zero_out_new;
+        EX_MEM_REG_PC <= new_pc_new;
+        EX_MEM_REG_dest_reg <= selected_dest_new;
+        
+        branch_in_ID_EX <= branch_in;
+        memRead_in_ID_EX <= memRead_in;
+        memToReg_in_ID_EX <= memToReg_in;
+        memWrite_in_ID_EX <= memWrite_in;
+        reg_write_in_ID_EX <= reg_write_in;
+    end if;
+    
+end process;
 
 
 end arch;

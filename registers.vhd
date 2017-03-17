@@ -62,6 +62,10 @@ rd2 <= rd2_t;
 				--	reg(32) <= alu_lo_in;
 				--	reg(33) <= alu_hi_in;
 				--end if;
+<<<<<<< HEAD
 		end if;
+=======
+			end if;
+>>>>>>> origin/master
 	end process;
 end behavioral;
