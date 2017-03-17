@@ -12,6 +12,7 @@ port (
 	alu_src : in std_logic;
 	funct : in std_logic_vector(5 downto 0);
 	imm : in std_logic_vector(31 downto 0);
+	shamt : in std_logic_vector(4 downto 0);
 	dest_reg1 : in std_logic_vector(4 downto 0);
 	dest_reg2 : in std_logic_vector(4 downto 0);
 	dest_reg_sel : in std_logic;
@@ -41,6 +42,7 @@ COMPONENT EXECUTION is
 		alu_src : in std_logic;
 		funct : in std_logic_vector(5 downto 0);
 		imm : in std_logic_vector(31 downto 0);
+		shamt : in std_logic_vector(4 downto 0);
 		dest_reg1 : in std_logic_vector(4 downto 0);
 		dest_reg2 : in std_logic_vector(4 downto 0);
 		dest_reg_sel : in std_logic;
@@ -62,7 +64,7 @@ signal branch, memRead, memToReg, memWrite, regWrite : std_logic := '0';
 
 begin
 
-EXEC : EXECUTION port map (clock, read_data1, read_data2, pc, alu_op, alu_src, funct, imm, dest_reg1, dest_reg2, dest_reg_sel, selected_dest_new, zero_out_new, alu_output_new, new_pc_shifted);
+EXEC : EXECUTION port map (clock, read_data1, read_data2, pc, alu_op, alu_src, funct, imm, shamt, dest_reg1, dest_reg2, dest_reg_sel, selected_dest_new, zero_out_new, alu_output_new, new_pc_shifted);
 
 process(clock)
 
