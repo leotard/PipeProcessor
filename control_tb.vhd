@@ -83,16 +83,22 @@ control_test : process
 begin
 --R type test
 op_code_t <= "000000";
+instruction_t <= "100010";
+
 REPORT "---------------Testing R-type instruction---------------";
 
 ASSERT(reg_w_t = '1')
-REPORT "reg_w_t is correct"	SEVERITY ERROR;
+REPORT "reg_w_t is wrong"	SEVERITY ERROR;
 
 ASSERT(reg_dst_t = '1')
-REPORT "reg_dst is correct"	SEVERITY ERROR;
+REPORT "reg_dst is wrong"	SEVERITY ERROR;
 
-ASSERT(mem_reg_t = '1')
-REPORT "mem_reg is correct"	SEVERITY ERROR;
+ASSERT(mem_reg_t = '0')
+REPORT "mem_reg is wrong"	SEVERITY ERROR;
+
+ASSERT(alu_op_t = "00000")
+REPORT "alu_op_t is wrong"	SEVERITY ERROR;
+
 
 WAIT;
 

@@ -75,8 +75,8 @@ mem_reg <= mem_reg_t;
 			--R type
 			when "000000" =>
 				reg_w_t <= '1';
-				reg_dst <= '1';
-				mem_reg <= '0';
+				reg_dst_t <= '1';
+				mem_reg_t <= '0';
 
 				case instruction is
 					--add
