@@ -7,6 +7,7 @@ port(
 	A : in std_logic_vector (31 downto 0);
 	B : in std_logic_vector (31 downto 0);
 	imm : in std_logic_vector (31 downto 0);
+	shamt : in std_logic_vector(4 downto 0);
 	control : in std_logic_vector (4 downto 0);
 	ALU_MUX : in std_logic;
 	output : out std_logic_vector (31 downto 0);
@@ -67,7 +68,7 @@ begin
 			output <= to_stdlogicvector(to_bitvector(A) srl to_integer(unsigned(ALU_INPUT1)));
 			zero <= '0';
 		elsif(control = "01010") then --shift arith
-			output <= to_stdlogicvector(to_bitvector(A) sra to_integer(unsigned(ALU_INPUT1)));
+			output <= to_stdlogicvector(to_bitvector(A) sra to_integer(unsigned(shamt)));
 			zero <= '0';
 		elsif(control = "01011") then -- branch on equal
 			if(std_logic_vector(signed(A) - signed(ALU_INPUT1)) = "00000000000000000000000000000000") then
@@ -97,7 +98,9 @@ begin
 			zero <= '0';
 			output <= ALU_INPUT1(15 downto 0) & "0000000000000000";
 		elsif(control = "10000") then --move from hi
+			output <= A;
 		elsif(control = "10001") then --move from low
+			output <= A;
 		end if;
 
 end process;
