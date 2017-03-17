@@ -33,8 +33,6 @@ entity control is
 		--WB stage
 		mem_reg : out std_logic
 
-		--test purpose
-		--clk : in std_logic
 	);
 end control;
 

@@ -10,6 +10,7 @@ entity instruction_decode is
     	wr_in : in std_logic_vector(4 downto 0);
 	wd_in : in std_logic_vector(31 downto 0);
 	regWrite_in : in std_logic;
+	pc_in : in std_logic_vector(31 downto 0);
 	
 	read_data1 : out std_logic_vector(31 downto 0);
 	read_data2 : out std_logic_vector(31 downto 0);
@@ -27,8 +28,8 @@ entity instruction_decode is
 	BNE_out : out std_logic;
 	Jump_out : out std_logic;
 	LUI_out : out std_logic;
-	jr_out : out std_logic;
-	sign_extend_out : out std_logic_vector(31 downto 0)
+	jr_out : out std_logic
+	
 );
 
 end entity;
@@ -179,20 +180,118 @@ component registers_lib is
 	);
 end component;
 
+signal shamt_new_ID_EX, shamt_new : std_logic_vector(4 downto 0);
+signal read_data1_ID_EX, read_data1_new : std_logic_vector(31 downto 0);
+signal read_data2_ID_EX, read_data2_new : std_logic_vector(31 downto 0);
+signal funct_new, funct_new_ID_EX : std_logic_vector(5 downto 0);
+
+signal alu_op_new_ID_EX, alu_op_new : std_logic_vector(4 downto 0);
+signal alu_src_new_ID_EX, alu_src_new : std_logic;
+
+signal imm_new_ID_EX, imm_new : std_logic_vector(31 downto 0);
+
+signal dest_reg1_new_ID_EX, dest_reg2_new_ID_EX: std_logic_vector(4 downto 0);
+signal dest_reg1_new, dest_reg2_new : std_logic_vector(4 downto 0);
+signal dest_reg_sel_new_ID_EX ,dest_reg_sel_new : std_logic;
+signal branch_out_new_ID_EX, branch_out_new : std_logic;
+signal memRead_out_new_ID_EX, memRead_out_new : std_logic;
+signal memToReg_out_new_ID_EX, memToReg_out_new : std_logic;
+signal memWrite_out_new_ID_EX, memWrite_out_new : std_logic;
+signal reg_write_out_new_ID_EX, reg_write_out_new : std_logic;
+signal pc_new, pc_new_ID_EX : std_logic_vector(31 downto 0);
+
+signal sign_extend_out_new, sign_extend_ID_EX : std_logic_vector(31 downto 0);
+
+signal BNE_out_new, jump_out_new, jr_out_new, LUI_out_new : std_logic;
+signal BNE_out_new_ID_EX, jump_out_new_ID_EX, jr_out_new_ID_EX, LUI_out_new_ID_EX : std_logic;
+
+
 begin
 
 --signal new_regWrite, new_ALUSrc,  new_regDest, new_branch, new_BNE, new_jump, new_LUI, new_memWrite, new_memRead, new_memToReg : std_logic;
 --signal new_ALUOpCode : std_logic_vector(3 downto 0);
 
-control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel, BNE_out, jump_out, jr_out, branch_out, LUI_out, alu_op, alu_src, memRead_out, memWrite_out, reg_write_out, memToReg_out);
 
-reg : registers_lib port map(read_data1, read_data2, instruction(25 downto 21), instruction(20 downto 16),
+
+control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel_new, BNE_out_new, jump_out_new, jr_out_new, branch_out_new, LUI_out_new, alu_op_new, alu_src_new, memRead_out, memWrite_out_new, reg_write_out_new, memToReg_out_new);
+
+reg : registers_lib port map(read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
 regWrite_in, wr_in, wd_in);
 
-sign : sign_extender port map(instruction(15 downto 0), sign_extend_out);
+sign : sign_extender port map(instruction(15 downto 0), sign_extend_out_new);
 
-shamt <= instruction(10 downto 6);
+shamt_new <= instruction(10 downto 6);
 
+funct_new <= instruction(5 downto 0);
+
+pc_new <= pc_in;
+
+
+dest_reg1_new <= instruction(20 downto 16);
+dest_reg2_new <= instruction(15 downto 11);
+
+process(clock)
+  begin
+  if(rising_edge(clock)) then
+
+  BNE_out <= BNE_out_new_ID_EX;
+  jump_out <= jump_out_new_ID_EX;
+  jr_out <= jr_out_new_ID_EX;
+lui_out <= lui_out_new_ID_EX;
+  
+  read_data1 <= read_data1_ID_EX;
+	read_data2 <= read_data2_ID_EX;
+	pc <= pc_new_ID_EX;
+	alu_op <= alu_op_new_ID_EX;
+	alu_src <= alu_src_new_ID_EX ;
+	funct <= funct_new_ID_EX;
+	imm <= imm_new_ID_EX;
+	shamt <= shamt_new_ID_EX;
+	dest_reg1 <= dest_reg1_new_ID_EX;
+	dest_reg2 <= dest_reg2_new_ID_EX;
+	dest_reg_sel <= dest_reg_sel_new_ID_EX;
+	branch_out <= branch_out_new_ID_EX;
+	memRead_out <= memRead_out_new_ID_EX;
+	memToReg_out  <= memToReg_out_new_ID_EX;
+	memWrite_out <= memWrite_out_new_ID_EX;
+	reg_write_out <= reg_write_out_new_ID_EX;
+  shamt <= shamt_new_ID_EX;
+  funct <= funct_new_ID_EX;
+  
+  imm <= sign_extend_ID_EX;
+
+
+elsif(falling_edge(clock)) then
+
+  BNE_out_new_ID_EX <= BNE_out_new;
+  jump_out_new_ID_EX <= jump_out_new;
+  jr_out_new_ID_EX <= jr_out_new;
+lui_out_new_ID_EX <= lui_out_new;
+  pc_new_ID_EX <= pc_new;
+
+  read_data1_ID_EX <= read_data1_new;
+	read_data2_ID_EX <= read_data2_new;
+	pc_new_ID_EX <= pc_new;
+	alu_op_new_ID_EX <= alu_op_new;
+	alu_src_new_ID_EX <= alu_src_new; 
+	funct_new_ID_EX <= funct_new;
+	imm_new_ID_EX <= imm_new;
+	shamt_new_ID_EX <= shamt_new;
+	dest_reg1_new_ID_EX <= dest_reg1_new;
+	dest_reg2_new_ID_EX <= dest_reg2_new;
+  dest_reg_sel_new_ID_EX <= dest_reg_sel_new;
+	branch_out_new_ID_EX <= branch_out_new;
+	memRead_out_new_ID_EX <= memRead_out_new;
+	memToReg_out_new_ID_EX <= memToReg_out_new;
+	memWrite_out_new_ID_EX <= memWrite_out_new;
+	reg_write_out_new_ID_EX <= reg_write_out_new;
+	funct_new_ID_EX <= funct_new;
+	sign_extend_ID_EX <= sign_extend_out_new;
+	
+	
+
+end if;
+end process;
 end arch;
 
 
