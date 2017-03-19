@@ -15,10 +15,10 @@ entity registers_lib is
 
 		writeEnable : in std_logic;
 		wr : in std_logic_vector(4 downto 0);
-		wd : in std_logic_vector(31 downto 0);
+		wd : in std_logic_vector(31 downto 0)
 		--alu_hi_out : out std_logic_vector(31 downto 0);
 		--alu_lo_out : out std_logic_vector(31 downto 0);
-		clk : in std_logic
+		--clock : in std_logic
 	);
 end registers_lib;
 
@@ -27,6 +27,7 @@ architecture behavioral of registers_lib is
 	signal reg : registers;
 	signal rd1_t, rd2_t, alu_lo_out_t, alu_hi_out_t : std_logic_vector(31 downto 0);
 
+	signal clock : std_logic;
 begin
 
 rd1 <= rd1_t;
@@ -34,12 +35,12 @@ rd2 <= rd2_t;
 --alu_lo_out <= alu_lo_out_t;
 --alu_hi_out <= alu_hi_out_t;
 
-	process(clk)
+	process
 	begin
 		--wait for active clock edge
 		--register 0 is hardwired to 0
 		reg(0) <= (others => '0');
-		if (clk'event and clk = '1') then
+		--if (clock'event and clock = '1') then
 			rd1_t <= reg(to_integer(unsigned(rr1)));
 			rd2_t <= reg(to_integer(unsigned(rr2)));
 			--alu_lo_out_t <= reg(32);
@@ -62,10 +63,7 @@ rd2 <= rd2_t;
 				--	reg(32) <= alu_lo_in;
 				--	reg(33) <= alu_hi_in;
 				--end if;
-<<<<<<< HEAD
-		end if;
-=======
-			end if;
->>>>>>> origin/master
+		--end if;
+		WAIT;
 	end process;
 end behavioral;
