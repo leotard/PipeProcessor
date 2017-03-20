@@ -1,6 +1,9 @@
-LIBRARY ieee;
-USE IEEE.std_logic_1164.all;
-USE IEEE.numeric_std.all;
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+library work;
+use work.pkg.all;
 
 entity instruction_decode is
 	port(
@@ -28,7 +31,8 @@ entity instruction_decode is
 	BNE_out : out std_logic;
 	Jump_out : out std_logic;
 	LUI_out : out std_logic;
-	jr_out : out std_logic
+	jr_out : out std_logic;
+	register_array : out registers(0 to 33)
 	
 );
 
@@ -165,18 +169,18 @@ component registers_lib is
 		rd2 : out std_logic_vector(31 downto 0);
 		rr1 : in std_logic_vector(4 downto 0);
 		rr2 : in std_logic_vector(4 downto 0);
-		--alu_lh_r : in std_logic;
+		--alu_lh_w : in std_logic;
 
 		--alu_lo_in : in std_logic_vector(31 downto 0);
 		--alu_hi_in : in std_logic_vector(31 downto 0);
 
 		writeEnable : in std_logic;
 		wr : in std_logic_vector(4 downto 0);
+		register_array : out registers(0 to 33);
 		wd : in std_logic_vector(31 downto 0)
 		--alu_hi_out : out std_logic_vector(31 downto 0);
 		--alu_lo_out : out std_logic_vector(31 downto 0);
-
-		--clk : in std_logic
+		--clock : in std_logic
 	);
 end component;
 
@@ -216,7 +220,7 @@ begin
 control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel_new, BNE_out_new, jump_out_new, jr_out_new, branch_out_new, LUI_out_new, alu_op_new, alu_src_new, memRead_out, memWrite_out_new, reg_write_out_new, memToReg_out_new);
 
 reg : registers_lib port map(read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
-regWrite_in, wr_in, wd_in);
+regWrite_in, wr_in, register_array, wd_in);
 
 sign : sign_extender port map(instruction(15 downto 0), sign_extend_out_new);
 

@@ -1,5 +1,8 @@
+
 --Adapted from Example 12-15 of Quartus Design and Synthesis handbook
 LIBRARY ieee;
+library work;
+use work.pkg.all;
 USE ieee.std_logic_1164.all;
 USE ieee.numeric_std.all;
 
@@ -15,15 +18,16 @@ ENTITY memory IS
 		address: IN INTEGER RANGE 0 TO ram_size-1;
 		memwrite: IN STD_LOGIC;
 		memread: IN STD_LOGIC;
-		readdata: OUT STD_LOGIC_VECTOR (7 DOWNTO 0)
+		readdata: OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+		memory_array : out registers(0 to ram_size -1)
 		--waitrequest: OUT STD_LOGIC
 	);
 END memory;
 
 ARCHITECTURE rtl OF memory IS
-	SIGNAL WORD: STD_LOGIC_VECTOR(31 DOWNTO 0):= "00000000000000000000000000000000";
-	TYPE MEM IS ARRAY(ram_size-1 downto 0) OF WORD;
-	SIGNAL ram_block: MEM;
+	SIGNAL WORD: STD_LOGIC_VECTOR(31 DOWNTO 0);
+	--TYPE MEM IS ARRAY(0 to ram_size-1) OF std_logic_vector(31 downto 0);
+	SIGNAL ram_block: registers(0 to ram_size-1):= ((others=> (others=>'0')));
 	SIGNAL read_address_reg: INTEGER RANGE 0 to ram_size-1;
 	SIGNAL write_waitreq_reg: STD_LOGIC := '1';
 	SIGNAL read_waitreq_reg: STD_LOGIC := '1';
@@ -32,11 +36,11 @@ BEGIN
 	mem_process: PROCESS (clock)
 	BEGIN
 		--This is a cheap trick to initialize the SRAM in simulation
-		IF(now < 1 ps)THEN
-			For i in 0 to ram_size-1 LOOP
-				ram_block(i) <= std_logic_vector(to_unsigned(i,32));
-			END LOOP;
-		end if;
+		--IF(now < 1 ps)THEN
+			--For i in 0 to ram_size-1 LOOP
+				--ram_block(i) <= std_logic_vector(to_unsigned(i,32));
+			--END LOOP;
+		--end if;
 
 		--This is the actual synthesizable SRAM block
 		IF (clock'event AND clock = '1') THEN
@@ -48,7 +52,7 @@ BEGIN
 	END PROCESS;
 	readdata <= ram_block(read_address_reg);
 
-
+	memory_array <= ram_block;
 	--The waitrequest signal is used to vary response time in simulation
 	--Read and write should never happen at the same time.
 	--waitreq_w_proc: PROCESS (memwrite)

@@ -20,7 +20,8 @@ port(
 	zero_out : out std_logic;
 	alu_output : out std_logic_vector(31 downto 0);
 	new_pc_out : out std_logic_vector(31 downto 0);
-	
+	read_data2_out: out std_logic_vector(31 downto 0);
+
 	branch_in, memRead_in, memToReg_in, memWrite_in, reg_write_in: in std_logic;
 	
 	BNE_in, Jump_in, LUI_in, jr_in : in std_logic;
@@ -97,6 +98,8 @@ signal branch_EX_MEM, memRead_EX_MEM, memToReg_EX_MEM, memWrite_EX_MEM, regWrite
 signal branch_in_ID_EX, memRead_in_ID_EX, memToReg_in_ID_EX, memWrite_in_ID_EX, reg_write_in_ID_EX : std_logic;
 signal BNE_in_ID_EX, Jump_in_ID_EX, LUI_in_ID_EX, jr_in_ID_EX : std_logic;
 
+signal EX_MEM_REG_read_data2: std_logic_vector(31 downto 0);
+
 begin
   
   
@@ -116,6 +119,7 @@ process(clock)
         zero_out <= EX_MEM_REG_ALU_zero;
         new_pc_out <= EX_MEM_REG_PC;
         selected_dest_out <= EX_MEM_REG_dest_reg;
+	read_data2_out <= EX_MEM_REG_read_data2;
         
         branch_out <= branch_in_ID_EX;
         memRead_out <= memRead_in_ID_EX;
@@ -128,6 +132,7 @@ process(clock)
         EX_MEM_REG_ALU_zero <= zero_out_new;
         EX_MEM_REG_PC <= new_pc_new;
         EX_MEM_REG_dest_reg <= selected_dest_new;
+	EX_MEM_REG_read_data2 <= read_data2;
         
         branch_in_ID_EX <= branch_in;
         memRead_in_ID_EX <= memRead_in;

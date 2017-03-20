@@ -10,6 +10,7 @@ ENTITY instructionMem IS
 	port(
 		PC: in std_logic_vector(31 downto 0);
 		instr_reg: out std_logic_vector(31 downto 0)
+
 	);
 		
 END instructionMem;
@@ -41,13 +42,15 @@ begin
 		Result(counter) := TempWord;
 		counter := counter + 1;
 	end loop;
+	
+	
 	return Result;
 end function;
-
+	
 	signal instr_set    : instr_set_t    := readMemFile("program.txt");
     
 BEGIN
-   
+
    --Read process
     process (PC)
 	variable pc_integer: integer;
@@ -56,6 +59,8 @@ BEGIN
 		pc_integer:= pc_integer/4;
 		instr_reg <= instr_set(pc_integer);
     end process;
+
+	
 
 end beh;
 

@@ -1,4 +1,8 @@
+
+
 LIBRARY ieee;
+library work;
+use work.pkg.all;
 USE ieee.std_logic_1164.all;
 use STD.textio.all; 
 use ieee.std_logic_textio.all;
@@ -21,7 +25,8 @@ port(
 	selected_dest_mem_out  : out std_logic_vector(4 downto 0);	
 	regWrite_mem           : in std_logic;
 	regWrite_mem_out       : out std_logic;
-	read_data              : out std_logic_vector(31 downto 0)
+	read_data              : out std_logic_vector(31 downto 0);
+	memory_array : out registers(0 to 32767)
 );
 end mem_stage;
 
@@ -37,12 +42,14 @@ COMPONENT memory IS
             address: IN INTEGER RANGE 0 TO ram_size-1;
             memwrite: IN STD_LOGIC := '0';
             memread: IN STD_LOGIC := '0';
-            readdata: OUT STD_LOGIC_VECTOR (31 DOWNTO 0)
+            readdata: OUT STD_LOGIC_VECTOR (31 DOWNTO 0);
+	memory_array : out registers(0 to ram_size -1)
             --waitrequest: OUT STD_LOGIC
         );
 END COMPONENT;
 
-signal m_addr, memwrite, memread: integer;
+signal memwrite, memread: integer;
+signal m_addr : INTEGER RANGE 0 TO 32767;
 signal mem_write, mem_read: std_logic;
 signal REG_readdata, readdata: STD_LOGIC_VECTOR (31 DOWNTO 0);
 signal REG_addrout: STD_LOGIC_VECTOR (31 DOWNTO 0);
@@ -57,25 +64,29 @@ m_addr <= to_integer(unsigned(addr));
 
 mux_instrStage_control <= (zero and branch);
 
-mem: memory port map (clock, write_data, m_addr, mem_w, mem_r, readdata);
+mem: memory port map (clock, write_data, m_addr, mem_w, mem_r, readdata, memory_array);
 
 process (clock)
 begin
-	if (mem_read='1') then 
+	 
 		if (falling_edge(clock)) then
-			REG_readdata <= readdata;
+				if (mem_read='1') then
+					REG_readdata <= readdata;
+				end if;
 			REG_addrout <= addr;
 			REG_mem_toRegout <= mem_toReg;
 			REG_selected_dest_memout <= selected_dest_mem;
 			REG_regWrite_memout <= regWrite_mem;
 		elsif(rising_edge(clock)) then
-			read_data <= REG_readdata;
+			if (mem_read='1') then
+				read_data <= REG_readdata;
+			end if;
 			addr_out <= REG_addrout;
 			mem_toReg_out <= REG_mem_toRegout;
 			selected_dest_mem_out <= REG_selected_dest_memout;
 			regWrite_mem_out <= REG_regWrite_memout;
 		end if;
-	end if;
+	
 END PROCESS;
 
 END behav;
