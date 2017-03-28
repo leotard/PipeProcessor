@@ -58,30 +58,30 @@ INSTR : instructionMem port map(PC, new_IR);
 			PC<=REG_PC;
 		elsif(falling_edge(clock)) then 
 			REG_IR <= new_IR;
-			if(control= '1') then 
-				EX_t <= '1';
-				REG_PC <= temp_PC;
-			else
-				EX_t <= '0';
+			--if(control= '1') then 
+				--EX_t <= '1';
+				--REG_PC <= temp_PC;
+			--else
+				--EX_t <= '0';
 				REG_PC <= new_PC;
-			end if;
+			--end if;
 			
-			if(EX_t= '1') then 
-				REG_PC <= temp_PC;
-			else
-				REG_PC <= new_PC;
-			end if;
+			--if(EX_t= '1') then 
+				--REG_PC <= temp_PC;
+			--else
+				--REG_PC <= new_PC;
+			--end if;
 			
 		end if;
 	end process;
 
-	process(control)
-	begin
-		if(rising_edge(control)) then
-			temp_PC <= new_PC;
-		end if;
+	--process(control)
+	--begin
+		--if(rising_edge(control)) then
+			--temp_PC <= new_PC;
+		--end if;
 	
-	end process;
+	--end process;
 
 	PC_out <= PC;
 	
