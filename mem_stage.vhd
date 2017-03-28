@@ -60,9 +60,8 @@ signal REG_regWrite_memout: std_logic;
 
 BEGIN
 
-m_addr <= to_integer(unsigned(addr));
-
 mux_instrStage_control <= (zero and branch);
+m_addr <= to_integer(unsigned(addr));
 
 mem: memory port map (clock, write_data, m_addr, mem_w, mem_r, readdata, memory_array);
 
