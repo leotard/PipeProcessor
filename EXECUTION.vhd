@@ -111,6 +111,7 @@ ALU_COMP : ALU port map(read_data1, read_data2, imm, shamt, alu_op, alu_src, alu
 PC_ADDER_SHIFTER_COMP : PC_ADDER_SHIFTER port map(imm, pc, new_pc_new);
   
 process(clock)
+
   
   begin
     
@@ -126,6 +127,10 @@ process(clock)
         memToReg_out <= memToReg_in_ID_EX;
         memWrite_out <= memWrite_in_ID_EX; 
         reg_write_out <= reg_write_in_ID_EX;
+	BNE_out <= BNE_in_ID_EX;
+	Jump_out <= jump_in_ID_EX;
+	LUI_out <= LUI_in_ID_EX;
+	jr_out <= jr_in_ID_EX;
         
     elsif(falling_edge(clock)) then
         EX_MEM_REG_ALU_result <= alu_output_new;
@@ -133,12 +138,15 @@ process(clock)
         EX_MEM_REG_PC <= new_pc_new;
         EX_MEM_REG_dest_reg <= selected_dest_new;
 	EX_MEM_REG_read_data2 <= read_data2;
-        
         branch_in_ID_EX <= branch_in;
         memRead_in_ID_EX <= memRead_in;
         memToReg_in_ID_EX <= memToReg_in;
         memWrite_in_ID_EX <= memWrite_in;
         reg_write_in_ID_EX <= reg_write_in;
+	BNE_in_ID_EX <= BNE_in;
+	jump_in_ID_EX <= jump_in;
+	LUI_in_ID_EX <= LUI_in;
+	jr_in_ID_EX <= jr_in;
     end if;
     
 end process;

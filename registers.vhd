@@ -44,14 +44,13 @@ register_array <= reg;
 	begin
 		--wait for active clock edge
 		--register 0 is hardwired to 0
-		reg(0) <= (others => '0');
 		--if (clock'event and clock = '1') then
 			rd1_t <= reg(to_integer(unsigned(rr1)));
 			rd2_t <= reg(to_integer(unsigned(rr2)));
 			--alu_lo_out_t <= reg(32);
 			--alu_hi_out_t <= reg(33);
 
-			if writeEnable = '1' then
+			if (writeEnable = '1' and to_integer(unsigned(wr)) /= 0) then
 				reg(to_integer(unsigned(wr))) <= wd;
 			end if;
 				

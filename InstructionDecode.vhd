@@ -273,8 +273,15 @@ elsif(falling_edge(clock)) then
 lui_out_new_ID_EX <= lui_out_new;
   pc_new_ID_EX <= pc_new;
 
-  read_data1_ID_EX <= read_data1_new;
-	read_data2_ID_EX <= read_data2_new;
+	--if sw need to put register address in read_data1
+	if(instruction(31 downto 26) = "101011") then
+		read_data1_ID_EX(4 downto 0) <= instruction(25 downto 21);
+		read_data1_ID_EX(31 downto 5) <= "000000000000000000000000000";
+		read_data2_ID_EX <= read_data2_new;
+	else
+		read_data2_ID_EX <= read_data2_new;
+		read_data1_ID_EX <= read_data1_new;
+	end if;
 	pc_new_ID_EX <= pc_new;
 	alu_op_new_ID_EX <= alu_op_new;
 	alu_src_new_ID_EX <= alu_src_new; 
