@@ -68,6 +68,19 @@ mem_reg <= mem_reg_t;
 	process(instruction)
 	begin
 
+	reg_w_t <= '0';
+	alu_src_t <= '0';
+	alu_op_t <= "XXXXX";
+	reg_dst_t <= '0';
+	branch_t <= '0';
+	bne_t <= '0';
+	jump_t <= '0';
+	jr_t <= '0';
+	LUI_t <= '0';
+
+	mem_w_t <= '0';
+	mem_r_t <= '0';
+	mem_reg_t <= '0';
 
 		case op_code is
 			--R type
