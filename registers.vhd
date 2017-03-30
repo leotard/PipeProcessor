@@ -35,25 +35,39 @@ architecture behavioral of registers_lib is
 	signal clock : std_logic;
 begin
 
-rd1 <= rd1_t;
-rd2 <= rd2_t;
+--rd1 <= rd1_t;
+--rd2 <= rd2_t;
 --alu_lo_out <= alu_lo_out_t;
 --alu_hi_out <= alu_hi_out_t;
 register_array <= reg;
 	process(rr1,rr2, wr, wd)
+
 	begin
 		--wait for active clock edge
 		--register 0 is hardwired to 0
 		--if (clock'event and clock = '1') then
-			rd1_t <= reg(to_integer(unsigned(rr1)));
-			rd2_t <= reg(to_integer(unsigned(rr2)));
+			if(writeEnable ='0') then
+				rd1 <= reg(to_integer(unsigned(rr1)));
+				rd2 <= reg(to_integer(unsigned(rr2)));
+			
 			--alu_lo_out_t <= reg(32);
 			--alu_hi_out_t <= reg(33);
 
-			if (writeEnable = '1' and to_integer(unsigned(wr)) /= 0) then
-				reg(to_integer(unsigned(wr))) <= wd;
+			elsif (writeEnable = '1' and to_integer(unsigned(wr)) /= 0) then
+				if(to_integer(unsigned(rr1)) = to_integer(unsigned(wr))) then
+					rd1 <= wd;
+					--rd1 <= reg(to_integer(unsigned(rr1)));
+				else
+					rd1 <= reg(to_integer(unsigned(rr1)));
+				end if;
+				if(to_integer(unsigned(rr2)) = to_integer(unsigned(wr))) then
+					rd2 <= wd;
+					--rd2 <= reg(to_integer(unsigned(rr2)));
+				else
+					rd2 <= reg(to_integer(unsigned(rr2)));
+				end if;
+				--reg(to_integer(unsigned(wr))) <= wd;
 			end if;
-				
 				--if rr1 = wr then
 					--rd1_t <= wd;
 				--end if;

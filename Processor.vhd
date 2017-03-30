@@ -102,6 +102,16 @@ COMPONENT MUXTWO is
   );
 end component;
 
+component WRITEBACK is
+port(
+	clock : in std_logic;
+	control : in std_logic;
+	A : in std_logic_vector(31 downto 0);
+	B : in std_logic_vector(31 downto 0);
+	output : out std_logic_vector(31 downto 0)
+);
+end component;
+
 
 COMPONENT mem_stage is
   port( 

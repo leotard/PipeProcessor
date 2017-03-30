@@ -209,6 +209,7 @@ signal sign_extend_out_new, sign_extend_ID_EX : std_logic_vector(31 downto 0);
 signal BNE_out_new, jump_out_new, jr_out_new, LUI_out_new : std_logic;
 signal BNE_out_new_ID_EX, jump_out_new_ID_EX, jr_out_new_ID_EX, LUI_out_new_ID_EX : std_logic;
 
+--signal register_array_ID, register_array_REG : registers(0 to 33):= ((others=> (others=>'0')));
 
 begin
 
@@ -227,9 +228,6 @@ sign : sign_extender port map(instruction(15 downto 0), sign_extend_out_new);
 shamt_new <= instruction(10 downto 6);
 
 funct_new <= instruction(5 downto 0);
-
-pc_new <= pc_in;
-
 
 dest_reg1_new <= instruction(20 downto 16);
 dest_reg2_new <= instruction(15 downto 11);
@@ -265,7 +263,12 @@ lui_out <= lui_out_new_ID_EX;
   imm <= sign_extend_ID_EX;
 
 
+
 elsif(falling_edge(clock)) then
+
+
+	
+
 
   BNE_out_new_ID_EX <= BNE_out_new;
   jump_out_new_ID_EX <= jump_out_new;
@@ -299,7 +302,7 @@ lui_out_new_ID_EX <= lui_out_new;
 	funct_new_ID_EX <= funct_new;
 	sign_extend_ID_EX <= sign_extend_out_new;
 	
-	
+	--register_array_REG(to_integer(unsigned(wr_in))) <= wd_in;
 
 end if;
 end process;
