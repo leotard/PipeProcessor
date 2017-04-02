@@ -74,19 +74,19 @@ begin
 temp <= std_logic_vector(signed(A) - signed(ALU_INPUT1));
 			if(std_logic_vector(signed(A) - signed(ALU_INPUT1)) = "00000000000000000000000000000000") then
 				zero <= '1';
-				output <= "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+				output <= "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
 			else
 				zero <= '0';
-				output <= "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+				output <= "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
 			end if;
 		elsif(control = "01100") then -- branch on not equal
 			
 			if(std_logic_vector(signed(A) - signed(ALU_INPUT1)) = "00000000000000000000000000000000") then
 				zero <= '0';
-				output <= "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+				output <= "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
 			else
 				zero <= '1';
-				output <= "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+				output <= "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
 			end if;
 		elsif(control = "01101" or control = "01110") then --set on less than
 			if(signed(A) < signed(ALU_INPUT1)) then

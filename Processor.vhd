@@ -102,15 +102,7 @@ COMPONENT MUXTWO is
   );
 end component;
 
-component WRITEBACK is
-port(
-	clock : in std_logic;
-	control : in std_logic;
-	A : in std_logic_vector(31 downto 0);
-	B : in std_logic_vector(31 downto 0);
-	output : out std_logic_vector(31 downto 0)
-);
-end component;
+
 
 
 COMPONENT mem_stage is
@@ -132,6 +124,19 @@ COMPONENT mem_stage is
 	regWrite_mem_out       : out std_logic;
 	read_data              : out std_logic_vector(31 downto 0);
 	memory_array : out registers(0 to 32767)
+);
+
+end component;
+
+component WRITEBACK is
+port(
+	clock : in std_logic;
+	write_reg_MEM : in std_logic_vector(4 downto 0);
+	control : in std_logic;
+	A : in std_logic_vector(31 downto 0);
+	B : in std_logic_vector(31 downto 0);
+	output : out std_logic_vector(31 downto 0);
+	write_reg_MEM_OUT : out std_logic_vector(4 downto 0)
 );
 
 end component;
@@ -181,6 +186,8 @@ signal wr_in, wr : std_logic_vector(4 downto 0);
 signal wd_in, wd : std_logic_vector(31 downto 0);
 signal regWrite_in : std_logic;
 
+signal write_reg_MEM : std_logic_vector(4 downto 0);
+
 
 begin
 
@@ -202,10 +209,10 @@ Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shi
 
 MEM : mem_stage port map(clock, alu_output_new, ALU_output_MEM, read_data2_EX, memRead_out_EX, memWrite_out_EX,
  memToReg_out_EX, zero_out_new,
-branch_out_EX, mux_instrStage_control_new, memToReg_MEM, selected_dest_new, write_reg_WB, reg_write_out_EX, regWrite_in, read_data_MEM, memory_array);
+branch_out_EX, mux_instrStage_control_new, memToReg_MEM, selected_dest_new, write_reg_MEM, reg_write_out_EX, regWrite_in, read_data_MEM, memory_array);
   
-WB_stage : MUXTWO port map (memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB);
-
+--WB_stage : MUXTWO port map (memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB);
+WB_stage : writeBack port map(clock, write_reg_MEM, memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB, write_reg_WB);
 
 --MEM_stage : port map (
 
