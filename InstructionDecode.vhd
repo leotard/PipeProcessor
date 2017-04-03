@@ -165,6 +165,7 @@ end component;
 
 component registers_lib is
 	port (
+		clock : in std_logic;
 		rd1 : out std_logic_vector(31 downto 0);
 		rd2 : out std_logic_vector(31 downto 0);
 		rr1 : in std_logic_vector(4 downto 0);
@@ -203,13 +204,17 @@ signal memToReg_out_new_ID_EX, memToReg_out_new : std_logic;
 signal memWrite_out_new_ID_EX, memWrite_out_new : std_logic;
 signal reg_write_out_new_ID_EX, reg_write_out_new : std_logic;
 signal pc_new, pc_new_ID_EX : std_logic_vector(31 downto 0);
+signal stall_ALU:std_logic_vector(4 downto 0);
+signal stall_MEM:std_logic_vector(4 downto 0);
+signal stall :std_logic_vector(4 downto 0);
 
 signal sign_extend_out_new, sign_extend_ID_EX : std_logic_vector(31 downto 0);
 
 signal BNE_out_new, jump_out_new, jr_out_new, LUI_out_new : std_logic;
 signal BNE_out_new_ID_EX, jump_out_new_ID_EX, jr_out_new_ID_EX, LUI_out_new_ID_EX : std_logic;
 
-
+--signal register_array_ID, register_array_REG : registers(0 to 33):= ((others=> (others=>'0')));
+signal flag : std_logic:='1';
 begin
 
 --signal new_regWrite, new_ALUSrc,  new_regDest, new_branch, new_BNE, new_jump, new_LUI, new_memWrite, new_memRead, new_memToReg : std_logic;
@@ -219,7 +224,7 @@ begin
 
 control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel_new, BNE_out_new, jump_out_new, jr_out_new, branch_out_new, LUI_out_new, alu_op_new, alu_src_new, memRead_out, memWrite_out_new, reg_write_out_new, memToReg_out_new);
 
-reg : registers_lib port map(read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
+reg : registers_lib port map(clock, read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
 regWrite_in, wr_in, register_array, wd_in);
 
 sign : sign_extender port map(instruction(15 downto 0), sign_extend_out_new);
@@ -228,26 +233,32 @@ shamt_new <= instruction(10 downto 6);
 
 funct_new <= instruction(5 downto 0);
 
-pc_new <= pc_in;
-
-
 dest_reg1_new <= instruction(20 downto 16);
 dest_reg2_new <= instruction(15 downto 11);
 
 process(clock)
+
+variable var_stall: std_logic_vector(4 downto 0);
+
   begin
   if(rising_edge(clock)) then
+	--write to register
+	flag <= '0';
 
   BNE_out <= BNE_out_new_ID_EX;
   jump_out <= jump_out_new_ID_EX;
   jr_out <= jr_out_new_ID_EX;
 lui_out <= lui_out_new_ID_EX;
-  
-  read_data1 <= read_data1_ID_EX;
-	read_data2 <= read_data2_ID_EX;
+  read_data1 <= read_data1_new;
+	read_data2 <= read_data2_new;
 	pc <= pc_new_ID_EX;
 	alu_op <= alu_op_new_ID_EX;
-	alu_src <= alu_src_new_ID_EX ;
+
+	stall_ALU <= instruction(25 downto 21);
+	var_stall := stall_ALU;
+	--stall_MEM<=var_stall;
+
+	alu_src <= alu_src_new_ID_EX;
 	funct <= funct_new_ID_EX;
 	imm <= imm_new_ID_EX;
 	shamt <= shamt_new_ID_EX;
@@ -265,17 +276,24 @@ lui_out <= lui_out_new_ID_EX;
   imm <= sign_extend_ID_EX;
 
 
+
 elsif(falling_edge(clock)) then
+
+
+	--put inputs in register for read
+	flag <= '1';
 
   BNE_out_new_ID_EX <= BNE_out_new;
   jump_out_new_ID_EX <= jump_out_new;
   jr_out_new_ID_EX <= jr_out_new;
 lui_out_new_ID_EX <= lui_out_new;
-  pc_new_ID_EX <= pc_new;
+  --pc_new_ID_EX <= pc_new;
 
-  read_data1_ID_EX <= read_data1_new;
-	read_data2_ID_EX <= read_data2_new;
-	pc_new_ID_EX <= pc_new;
+	
+	--if(instruction(25 downto 21) = )then 
+		
+	--end if;
+	pc_new_ID_EX <= pc_in;
 	alu_op_new_ID_EX <= alu_op_new;
 	alu_src_new_ID_EX <= alu_src_new; 
 	funct_new_ID_EX <= funct_new;
@@ -283,6 +301,7 @@ lui_out_new_ID_EX <= lui_out_new;
 	shamt_new_ID_EX <= shamt_new;
 	dest_reg1_new_ID_EX <= dest_reg1_new;
 	dest_reg2_new_ID_EX <= dest_reg2_new;
+	--stall_MEM <= stall_ALU;
   dest_reg_sel_new_ID_EX <= dest_reg_sel_new;
 	branch_out_new_ID_EX <= branch_out_new;
 	memRead_out_new_ID_EX <= memRead_out_new;
@@ -292,10 +311,21 @@ lui_out_new_ID_EX <= lui_out_new;
 	funct_new_ID_EX <= funct_new;
 	sign_extend_ID_EX <= sign_extend_out_new;
 	
-	
+	--register_array_REG(to_integer(unsigned(wr_in))) <= wd_in;
+	--if sw need to put register address in read_data1
+	if(instruction(31 downto 26) = "101011") then
+		read_data1_ID_EX(4 downto 0) <= instruction(25 downto 21);
+		read_data1_ID_EX(31 downto 5) <= "000000000000000000000000000";
+		read_data2_ID_EX <= read_data2_new;
+	else
+		read_data2_ID_EX <= read_data2_new;
+		read_data1_ID_EX <= read_data1_new;
+	end if;
 
 end if;
 end process;
+
+--stall_ALU <= varStall_ALU;
 end arch;
 
 

@@ -216,7 +216,7 @@ mem_reg <= mem_reg_t;
 			when "100011" =>
 				reg_w_t <= '1';
 				alu_src_t <= '1';
-				alu_op_t <= "";
+				alu_op_t <= "00000";
 				reg_dst_t <= '0';
 				mem_r_t <= '1';
 				mem_reg_t <= '1';
@@ -224,19 +224,22 @@ mem_reg <= mem_reg_t;
 			--sw
 			when "101011" =>
 				alu_src_t <= '1';
-				alu_op_t <= "";
-				mem_w_t <= '1';	
+				reg_w_t <= '0';
+				alu_op_t <= "00000";
+				mem_w_t <= '1';
 
 			--beq
 			when "000100" =>
 				alu_op_t <= "01011";
 				branch_t <= '1';
+				alu_src_t <= '0';
 
 			--bne
 			when "000101" =>
 				alu_op_t <= "01100";
 				branch_t <= '1';
 				bne <= '1';
+				alu_src_t <= '0';
 
 			--J type
 			--j

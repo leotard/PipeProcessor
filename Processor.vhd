@@ -103,6 +103,8 @@ COMPONENT MUXTWO is
 end component;
 
 
+
+
 COMPONENT mem_stage is
   port( 
 	clock                  : in std_logic;
@@ -126,6 +128,19 @@ COMPONENT mem_stage is
 
 end component;
 
+component WRITEBACK is
+port(
+	clock : in std_logic;
+	write_reg_MEM : in std_logic_vector(4 downto 0);
+	control : in std_logic;
+	A : in std_logic_vector(31 downto 0);
+	B : in std_logic_vector(31 downto 0);
+	output : out std_logic_vector(31 downto 0);
+	write_reg_MEM_OUT : out std_logic_vector(4 downto 0)
+);
+
+end component;
+
 
 --IF/ID registers
 
@@ -145,7 +160,8 @@ signal BNE_out_new, jump_out_new, LUI_out_new, jr_out_new : std_logic;
 
 
 --EX/MEM registers
-
+signal branch_out_EX, memRead_out_EX, memToReg_out_EX, memWrite_out_EX,
+reg_write_out_EX, BNE_out_EX, jump_out_EX, LUI_out_EX, jr_out_EX : std_logic;
 signal EX_MEM_REG_PC, new_pc_shifted : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
 signal EX_MEM_REG_ALU_zero, zero_out_new : std_logic := '0';
 signal read_data2_EX : std_logic_vector(31 downto 0);
@@ -170,28 +186,33 @@ signal wr_in, wr : std_logic_vector(4 downto 0);
 signal wd_in, wd : std_logic_vector(31 downto 0);
 signal regWrite_in : std_logic;
 
+signal write_reg_MEM : std_logic_vector(4 downto 0);
+
 
 begin
 
 
 
 
-
 EXEC : EXECUTION port map (clock, read_data1_new, read_data2_new, pc_new_ID, alu_op_new, alu_src_new,
  funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, selected_dest_new, zero_out_new,
- alu_output_new, new_pc_shifted,read_data2_EX, branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new, BNE_out_new, jump_out_new, LUI_out_new, jr_out_new);
+ alu_output_new, new_pc_shifted,read_data2_EX, branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
+ BNE_out_new, jump_out_new, LUI_out_new, jr_out_new, branch_out_EX, memRead_out_EX, memToReg_out_EX, memWrite_out_EX,
+reg_write_out_EX, BNE_out_EX, jump_out_EX, LUI_out_EX, jr_out_EX);
 
-ID : Instruction_Decode port map(clock, IF_instruction, write_reg_WB, write_data_WB, regWrite_in, pc_IF_new, read_data1_new, read_data2_new, pc_new_ID, alu_op_new, alu_src_new, funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
+ID : Instruction_Decode port map(clock, IF_instruction, write_reg_WB, write_data_WB, regWrite_in, pc_IF_new, read_data1_new, read_data2_new, pc_new_ID, 
+alu_op_new, alu_src_new, funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, 
+branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
 BNE_out_new, jump_out_new, LUI_out_new, jr_out_new, register_array);
 
 Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shifted, pc_IF_new, IF_instruction);
 
-MEM : mem_stage port map(clock, alu_output_new, ALU_output_MEM, read_data2_EX, memRead_out_new, memWrite_out_new,
- memToReg_out_new, zero_out_new,
-branch_out_new, mux_instrStage_control_new, memToReg_MEM, selected_dest_new, write_reg_WB, reg_write_out_new, regWrite_in, read_data_MEM, memory_array);
+MEM : mem_stage port map(clock, alu_output_new, ALU_output_MEM, read_data2_EX, memRead_out_EX, memWrite_out_EX,
+ memToReg_out_EX, zero_out_new,
+branch_out_EX, mux_instrStage_control_new, memToReg_MEM, selected_dest_new, write_reg_MEM, reg_write_out_EX, regWrite_in, read_data_MEM, memory_array);
   
-WB_stage : MUXTWO port map (memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB);
-
+--WB_stage : MUXTWO port map (memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB);
+WB_stage : writeBack port map(clock, write_reg_MEM, memToReg_MEM, read_data_MEM, ALU_output_MEM, write_data_WB, write_reg_WB);
 
 --MEM_stage : port map (
 
