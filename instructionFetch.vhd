@@ -57,18 +57,22 @@ INSTR : instructionMem port map(new_PC, new_IR);
 
 
 		if(rising_edge(clock)) then
-			control_t <= control;
-			branch_PC <= EX_stage;
-			PC_FOUR <= REG_PC;
+			if(branch_stall="00")then
+				control_t <= control;
+				branch_PC <= EX_stage;
+				PC_FOUR <= REG_PC;
 
-			IR <= REG_IR;
-			PC_OUT <= REG_PC;
+				IR <= REG_IR;
+				PC_OUT <= REG_PC;
+			elsif(branch_stall="11" or branch_stall="10")then
+				IR <= "00000000000000000000000000100000";
+			end if;
+				
 		elsif(falling_edge(clock)) then
 			REG_IR <= new_IR;
 			REG_PC <= mux_in;
+			
 		end if;
-
-
 
 
 
