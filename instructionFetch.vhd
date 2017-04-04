@@ -10,6 +10,7 @@ ENTITY instructionFetch IS
 		clock: in std_logic;
 		control : in std_logic;
 		EX_stage: in std_logic_vector(31 downto 0);
+		branch_stall: in std_logic_vector(1 downto 0); 
 		--PC: in std_logic_vector(31 downto 0);
 		PC_out: out std_logic_vector(31 downto 0);
 		IR: out std_logic_vector(31 downto 0)
@@ -76,6 +77,8 @@ INSTR : instructionMem port map(new_PC, new_IR);
 
 
 
+
+
 	--	if(rising_edge(clock)) then
 			--mux_in;
 		--	IR <= REG_IR;
@@ -107,8 +110,7 @@ INSTR : instructionMem port map(new_PC, new_IR);
 
 	--PC_out <= PC;
 	
-end behav;
-	
+end behav;	
 	
 
 
