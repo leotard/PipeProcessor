@@ -21,6 +21,7 @@ architecture arch of processor is
 COMPONENT EXECUTION is
 	port(
 	clock : in std_logic;
+	ALU_ready : in std_logic;
 	read_data1 : in std_logic_vector(31 downto 0);
 	read_data2 : in std_logic_vector(31 downto 0);
 	pc : in std_logic_vector(31 downto 0);
@@ -78,6 +79,7 @@ port(
 	LUI_out : out std_logic;
 	jr_out : out std_logic;
 	branch_stall: out std_logic_vector(1 downto 0);
+	output_ready : out std_logic;
 	register_array : out registers(0 to 33)
 );
 
@@ -150,7 +152,7 @@ end component;
 signal IF_instruction, IF_REG_PC, pc_incremented, instruction_out, PC_out_IF, instruction_in : std_logic_vector(31 downto 0);
 signal pc_IF_new : std_logic_vector(31 downto 0); 
 signal mux_instrStage_control_new: std_logic;
-signal branch_stall__t:std_logic_vector(1 downto 0);
+signal branch_stall_t:std_logic_vector(1 downto 0);
 
 --ID/EX registers
 
@@ -161,6 +163,7 @@ reg_write_out_new_ID_EX, reg_write_out_new : std_logic;
 signal shamt_new, shamt_new_out, shamt_new_ID_EX, alu_op_new, alu_op_new_out, alu_op_new_ID_EX, dest_reg1_new, dest_reg1_new_out, dest_reg2_new, dest_reg2_new_out, dest_reg1_new_ID_EX, dest_reg2_new_ID_EX: std_logic_vector(4 downto 0);
 signal funct_new, funct_new_out, funct_new_ID_EX: std_logic_vector(5 downto 0);
 signal BNE_out_new, jump_out_new, LUI_out_new, jr_out_new : std_logic;
+signal ALU_ready : std_logic;
 
 
 --EX/MEM registers
@@ -198,7 +201,7 @@ begin
 
 
 
-EXEC : EXECUTION port map (clock, read_data1_new, read_data2_new, pc_new_ID, alu_op_new, alu_src_new,
+EXEC : EXECUTION port map (clock, ALU_ready, read_data1_new, read_data2_new, pc_new_ID, alu_op_new, alu_src_new,
  funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, selected_dest_new, zero_out_new,
  alu_output_new, new_pc_shifted,read_data2_EX, branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
  BNE_out_new, jump_out_new, LUI_out_new, jr_out_new, branch_out_EX, memRead_out_EX, memToReg_out_EX, memWrite_out_EX,
@@ -207,9 +210,9 @@ reg_write_out_EX, BNE_out_EX, jump_out_EX, LUI_out_EX, jr_out_EX);
 ID : Instruction_Decode port map(clock, IF_instruction, write_reg_WB, write_data_WB, regWrite_in, pc_IF_new, read_data1_new, read_data2_new, pc_new_ID, 
 alu_op_new, alu_src_new, funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, 
 branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
-BNE_out_new, jump_out_new, LUI_out_new, jr_out_new,branch_stall__t, register_array);
+BNE_out_new, jump_out_new, LUI_out_new, jr_out_new,branch_stall_t, ALU_ready, register_array);
 
-Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shifted, branch_stall__t, pc_IF_new, IF_instruction);
+Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shifted, branch_stall_t, pc_IF_new, IF_instruction);
 
 MEM : mem_stage port map(clock, alu_output_new, ALU_output_MEM, read_data2_EX, memRead_out_EX, memWrite_out_EX,
  memToReg_out_EX, zero_out_new,

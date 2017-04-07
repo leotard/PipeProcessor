@@ -33,7 +33,7 @@ ARCHITECTURE behav OF instructionFetch IS
 		);
 	end component;
 	
-	component MUXTWO is
+	component MUXASYNC is
 		port(
 			control : in std_logic;
 			A : in std_logic_vector(31 downto 0);	
@@ -50,7 +50,7 @@ ARCHITECTURE behav OF instructionFetch IS
 BEGIN 
 
 ADDER : PC_adder port map(new_PC, mux_in);
-MUX   : MUXTWO port map(control,EX_STAGE,PC_FOUR,new_PC);
+MUX   : MUXASYNC port map(control,EX_STAGE,PC_FOUR,new_PC);
 INSTR : instructionMem port map(new_PC, new_IR);
 
 	process(clock)

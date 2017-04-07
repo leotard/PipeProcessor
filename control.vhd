@@ -227,6 +227,7 @@ mem_reg <= mem_reg_t;
 			when "000100" =>
 				alu_op_t <= "01011";
 				branch_t <= '1';
+				reg_w_t <= '0';
 				alu_src_t <= '0';
 
 			--bne
@@ -234,6 +235,7 @@ mem_reg <= mem_reg_t;
 				alu_op_t <= "01100";
 				branch_t <= '1';
 				bne <= '1';
+				reg_w_t <= '0';
 				alu_src_t <= '0';
 
 			--J type
