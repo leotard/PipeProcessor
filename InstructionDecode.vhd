@@ -32,7 +32,8 @@ entity instruction_decode is
 	Jump_out : out std_logic;
 	LUI_out : out std_logic;
 	jr_out : out std_logic;
-	branch_stall: out std_logic_vector(1 downto 0); 
+	branch_stall: out std_logic_vector(1 downto 0);
+	output_ready : out std_logic; 
 	register_array : out registers(0 to 33)
 	
 );
@@ -244,6 +245,8 @@ variable var_stall: std_logic_vector(4 downto 0);
 
   begin
   if(rising_edge(clock)) then
+
+	output_ready <= '1';
 	--write to register
 	flag <= '0';
 
@@ -281,7 +284,7 @@ lui_out <= lui_out_new_ID_EX;
 
 
 elsif(falling_edge(clock)) then
-
+	output_ready <= '0';
 
 	--put inputs in register for read
 	flag <= '1';

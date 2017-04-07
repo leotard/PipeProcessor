@@ -5,6 +5,7 @@ use ieee.numeric_std.all;
 entity EXECUTION is
 port(
 	clock : in std_logic;
+	ALU_ready : in std_logic;
 	read_data1 : in std_logic_vector(31 downto 0);
 	read_data2 : in std_logic_vector(31 downto 0);
 	pc : in std_logic_vector(31 downto 0);
@@ -46,6 +47,7 @@ end component;
 
 COMPONENT ALU is
 	port(
+		ALU_ready : std_logic;
 		A : in std_logic_vector (31 downto 0);
 		B : in std_logic_vector (31 downto 0);
 		imm : in std_logic_vector (31 downto 0);
@@ -106,7 +108,7 @@ begin
 
 REG_DEST: DEST_MUX_comp port map (dest_reg_sel, dest_reg1, dest_reg2, selected_dest_new);
 
-ALU_COMP : ALU port map(read_data1, read_data2, imm, shamt, alu_op, alu_src, alu_output_new, zero_out_new);
+ALU_COMP : ALU port map(ALU_ready, read_data1, read_data2, imm, shamt, alu_op, alu_src, alu_output_new, zero_out_new);
 
 PC_ADDER_SHIFTER_COMP : PC_ADDER_SHIFTER port map(imm, pc, new_pc_new);
   

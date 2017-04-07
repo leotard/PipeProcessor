@@ -4,6 +4,7 @@ use ieee.numeric_std.all;
 
 entity ALU is
 port(
+	ALU_ready : std_logic;
 	A : in std_logic_vector (31 downto 0);
 	B : in std_logic_vector (31 downto 0);
 	imm : in std_logic_vector (31 downto 0);
@@ -20,14 +21,14 @@ architecture arch of ALU is
 signal temp : std_logic_vector(31 downto 0);
 begin
 
-process (A, B, imm, control)
+process (ALU_ready)
 
 variable mult_temp: std_logic_vector(63 downto 0);
 
 variable ALU_INPUT1 : std_logic_vector(31 downto 0);
 
 begin
-	
+	if(ALU_ready = '1') then
 
 		--Select ALU input
 		if(ALU_MUX = '0') then
@@ -35,8 +36,9 @@ begin
 		else
 			ALU_INPUT1 := imm; 
 		end if;
-		
-		if(control = "00000") then --ADD
+		if(control = "00000" and imm = "00000000000000000000000000000000") then
+			output <= "00000000000000000000000000000000";
+		elsif(control = "00000") then --ADD
 			output <= std_logic_vector(signed(A) + signed(ALU_INPUT1));
 			zero <= '0';
 		elsif(control = "00001") then --SUB
@@ -100,10 +102,13 @@ temp <= std_logic_vector(signed(A) - signed(ALU_INPUT1));
 			zero <= '0';
 			output <= ALU_INPUT1(15 downto 0) & "0000000000000000";
 		elsif(control = "10000") then --move from hi
+			zero <= '0';
 			output <= A;
 		elsif(control = "10001") then --move from low
+			zero <= '0';
 			output <= A;
 		end if;
+	end if;
 
 end process;
 
