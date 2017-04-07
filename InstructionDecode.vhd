@@ -254,7 +254,11 @@ variable var_stall: std_logic_vector(4 downto 0);
   jump_out <= jump_out_new_ID_EX;
   jr_out <= jr_out_new_ID_EX;
 lui_out <= lui_out_new_ID_EX;
-  read_data1 <= read_data1_new;
+if(instruction(31 downto 26) = "101011") then
+  	read_data1 <= read_data1_ID_EX;
+else
+	read_data1 <= read_data1_new;
+end if;
 	read_data2 <= read_data2_new;
 	pc <= pc_new_ID_EX;
 	alu_op <= alu_op_new_ID_EX;

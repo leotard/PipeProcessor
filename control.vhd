@@ -220,7 +220,7 @@ mem_reg <= mem_reg_t;
 				alu_src_t <= '1';
 				branch_t <= '0';
 				reg_w_t <= '0';
-				alu_op_t <= "00000";
+				alu_op_t <= "10010";
 				mem_w_t <= '1';
 
 			--beq

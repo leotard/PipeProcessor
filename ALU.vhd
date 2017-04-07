@@ -37,6 +37,7 @@ begin
 			ALU_INPUT1 := imm; 
 		end if;
 		if(control = "00000" and imm = "00000000000000000000000000000000") then
+			zero <= '0';
 			output <= "00000000000000000000000000000000";
 		elsif(control = "00000") then --ADD
 			output <= std_logic_vector(signed(A) + signed(ALU_INPUT1));
@@ -105,6 +106,9 @@ temp <= std_logic_vector(signed(A) - signed(ALU_INPUT1));
 			zero <= '0';
 			output <= A;
 		elsif(control = "10001") then --move from low
+			zero <= '0';
+			output <= A;
+		elsif(control = "10010") then -- SW
 			zero <= '0';
 			output <= A;
 		end if;
