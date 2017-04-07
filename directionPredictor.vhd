@@ -51,28 +51,28 @@ begin
 				if (branch_actual = '0' and (op_code_t = "000100" or op_code_t = "000101") ) then
 					pred_t <= "00";
 				elsif (branch_actual = '1' and (op_code_t = "000100" or op_code_t = "000101")) then
-					state <= "01";
+					pred_t <= "01";
 				end if;
 
 			when "01" =>
 				if (branch_actual = '0' and (op_code_t = "000100" or op_code_t = "000101") ) then
 					pred_t <= "00";
 				elsif (branch_actual = '1' and (op_code_t = "000100" or op_code_t = "000101")) then
-					state <= "10";
+					pred_t <= "10";
 				end if;
 
 			when "10" =>
 				if (branch_actual = '0' and (op_code_t = "000100" or op_code_t = "000101") ) then
 					pred_t <= "01";
 				elsif (branch_actual = '1' and (op_code_t = "000100" or op_code_t = "000101")) then
-					state <= "11";
+					pred_t <= "11";
 				end if;
 
 			when "11" =>
 				if (branch_actual = '0' and (op_code_t = "000100" or op_code_t = "000101") ) then
 					pred_t <= "10";
 				elsif (branch_actual = '1' and (op_code_t = "000100" or op_code_t = "000101")) then
-					state <= "11";
+					pred_t <= "11";
 				end if;
 
 			when others =>
