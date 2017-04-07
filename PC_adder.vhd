@@ -15,8 +15,8 @@ ARCHITECTURE behavior OF PC_adder IS
 	signal next_t: std_logic_vector(31 downto 0) := "00000000000000000000000000000100";
 
 BEGIN
-process(PC)
-begin
+--process(PC)
+--begin
 	adder_out <= std_logic_vector(unsigned(PC) + unsigned(next_t));
-end process;
+--end process;
 end behavior;

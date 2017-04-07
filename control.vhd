@@ -65,22 +65,9 @@ mem_r <= mem_r_t;
 mem_reg <= mem_reg_t;
 
 
-	process(instruction)
+	process(instruction, op_code)
 	begin
 
-	reg_w_t <= '0';
-	alu_src_t <= '0';
-	alu_op_t <= "XXXXX";
-	reg_dst_t <= '0';
-	branch_t <= '0';
-	bne_t <= '0';
-	jump_t <= '0';
-	jr_t <= '0';
-	LUI_t <= '0';
-
-	mem_w_t <= '0';
-	mem_r_t <= '0';
-	mem_reg_t <= '0';
 
 		case op_code is
 			--R type
@@ -166,6 +153,7 @@ mem_reg <= mem_reg_t;
 			--addi
 			when "001000" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "00000";
 				reg_dst_t <= '0';
@@ -174,6 +162,7 @@ mem_reg <= mem_reg_t;
 			--andi
 			when "001100" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "00100";
 				reg_dst_t <= '0';
@@ -182,6 +171,7 @@ mem_reg <= mem_reg_t;
 			--ori
 			when "001101" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "00101";
 				reg_dst_t <= '0';
@@ -190,6 +180,7 @@ mem_reg <= mem_reg_t;
 			--xori
 			when "001110" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "00111";
 				reg_dst_t <= '0';
@@ -198,6 +189,7 @@ mem_reg <= mem_reg_t;
 			--lui
 			when "001111" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "01111";
 				reg_dst_t <= '0';
@@ -207,6 +199,7 @@ mem_reg <= mem_reg_t;
 			--slti
 			when "001010" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "01101";
 				reg_dst_t <= '0';
@@ -215,6 +208,7 @@ mem_reg <= mem_reg_t;
 			--lw
 			when "100011" =>
 				reg_w_t <= '1';
+				branch_t <= '0';
 				alu_src_t <= '1';
 				alu_op_t <= "00000";
 				reg_dst_t <= '0';
@@ -224,6 +218,7 @@ mem_reg <= mem_reg_t;
 			--sw
 			when "101011" =>
 				alu_src_t <= '1';
+				branch_t <= '0';
 				reg_w_t <= '0';
 				alu_op_t <= "00000";
 				mem_w_t <= '1';
@@ -245,15 +240,18 @@ mem_reg <= mem_reg_t;
 			--j
 			when "000010" =>
 				alu_op_t <= "XXXXX";
+				branch_t <= '0';
 				jump_t <= '1';
 
 			--jal
 			when "000011" =>
+				branch_t <= '0';
 				reg_w_t <= '1';
 				alu_op_t <= "XXXXX";
 				jump_t <= '1';
 
-			when others => null;
+			when others =>
+				branch_t <= '0';
 
 		end case;
 		end process;

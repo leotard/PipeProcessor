@@ -18,17 +18,17 @@ architecture arch of MUXTWO is
 
 begin
 
---process(control)
---begin
-	--if(control = '1')then
-		--control_t <= '1';
---		output <= A;
-	--else
---		output <= B;
-	--end if;
---end process;
+process(control)
+begin
+	if(control = '1')then
+		control_t <= '1';
+		output <= A;
+	else
+		output <= B;
+	end if;
+end process;
 
-output <= A when control = '1' else
-            B;
+--output <= A when control = '1' else
+ --           B;
 end arch;
 

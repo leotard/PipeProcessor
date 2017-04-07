@@ -32,6 +32,7 @@ entity instruction_decode is
 	Jump_out : out std_logic;
 	LUI_out : out std_logic;
 	jr_out : out std_logic;
+	branch_stall: out std_logic_vector(1 downto 0); 
 	register_array : out registers(0 to 33)
 	
 );
@@ -214,6 +215,7 @@ signal BNE_out_new, jump_out_new, jr_out_new, LUI_out_new : std_logic;
 signal BNE_out_new_ID_EX, jump_out_new_ID_EX, jr_out_new_ID_EX, LUI_out_new_ID_EX : std_logic;
 
 --signal register_array_ID, register_array_REG : registers(0 to 33):= ((others=> (others=>'0')));
+signal past_stall: std_logic_vector(1 downto 0):="00";
 signal flag : std_logic:='1';
 begin
 
@@ -266,6 +268,7 @@ lui_out <= lui_out_new_ID_EX;
 	dest_reg2 <= dest_reg2_new_ID_EX;
 	dest_reg_sel <= dest_reg_sel_new_ID_EX;
 	branch_out <= branch_out_new_ID_EX;
+		
 	memRead_out <= memRead_out_new_ID_EX;
 	memToReg_out  <= memToReg_out_new_ID_EX;
 	memWrite_out <= memWrite_out_new_ID_EX;
@@ -303,6 +306,7 @@ lui_out_new_ID_EX <= lui_out_new;
 	dest_reg2_new_ID_EX <= dest_reg2_new;
 	--stall_MEM <= stall_ALU;
   dest_reg_sel_new_ID_EX <= dest_reg_sel_new;
+
 	branch_out_new_ID_EX <= branch_out_new;
 	memRead_out_new_ID_EX <= memRead_out_new;
 	memToReg_out_new_ID_EX <= memToReg_out_new;
