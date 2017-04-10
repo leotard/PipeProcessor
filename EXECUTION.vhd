@@ -138,7 +138,12 @@ process(clock)
         EX_MEM_REG_ALU_result <= alu_output_new;
         EX_MEM_REG_ALU_zero <= zero_out_new;
         EX_MEM_REG_PC <= new_pc_new;
-        EX_MEM_REG_dest_reg <= selected_dest_new;
+	--IF MULT OR DIV
+	if(alu_op = "00010" OR alu_op = "00011") then
+		EX_MEM_REG_dest_reg <= "10000"; -- LO REG $32
+	else
+		 EX_MEM_REG_dest_reg <= selected_dest_new;
+	end if;
 	EX_MEM_REG_read_data2 <= read_data2;
         branch_in_ID_EX <= branch_in;
         memRead_in_ID_EX <= memRead_in;

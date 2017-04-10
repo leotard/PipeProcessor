@@ -41,48 +41,70 @@ ARCHITECTURE behav OF instructionFetch IS
 			output : out std_logic_vector(31 downto 0)
 		);
 	end component;
+
+	component HazardDetection is
+		port(
+			clock : in std_logic;
+			instruction: in std_logic_vector(31 downto 0);
+			previous_inst : in std_logic_vector(31 downto 0);
+			current_data_stall : in std_logic_vector(2 downto 0);
+			stall: out std_logic_vector(2 downto 0)
+		);
+	end component;
 	
 	signal control_t:std_logic:='0';
 	signal MUX_PC : std_logic_vector(31 downto 0):="00000000000000000000000000000000";
 	signal PC, new_PC, temp_PC, REG_PC, mux_in, new_IR, REG_IR, branch_PC, PC_FOUR: std_logic_vector(31 downto 0):="00000000000000000000000000000000";
 	signal past_stall : std_logic_vector(1 downto 0):="00";
+	signal data_stall, current_data_stall : std_logic_vector(2 downto 0):="000";
+	signal previous_PC, previous_PC_temp, previous_inst, previous_inst_temp : std_logic_vector(31 downto 0):= (OTHERS => '0');
 	
 BEGIN 
 
 ADDER : PC_adder port map(new_PC, mux_in);
 MUX   : MUXASYNC port map(control,EX_STAGE,PC_FOUR,new_PC);
 INSTR : instructionMem port map(new_PC, new_IR);
+HAZ   : HazardDetection port map (clock, REG_IR, previous_inst, current_data_stall, data_stall);
 
 	process(clock)
+	variable var_data_stall: std_logic_vector(2 downto 0);
 	begin
-
 
 		if(rising_edge(clock)) then
 			PC_FOUR <= REG_PC;
 			--control_t <= control;
 			--branch_PC <= EX_stage;
-			
-			--add stall in IF
-	
-			if((REG_IR(31 downto 26) = "000100" OR REG_IR(31 downto 26) = "000101") and past_stall = "00")then
+			--add stall in IF because of branch 
+			if(data_stall /= "000") then
+				IR <= (OTHERs => '0');
+				current_data_stall <= std_logic_vector(to_unsigned(to_integer(unsigned(data_stall)) - 1, data_stall'length));
+				previous_inst_temp <= (OTHERs => '0');
+				--replace with old PC
+				PC_FOUR <= previous_PC;
+				PC_OUT <= previous_PC;
+			elsif((REG_IR(31 downto 26) = "000100" OR REG_IR(31 downto 26) = "000101") and past_stall = "00")then
 				past_stall <= "11";
+				previous_inst_temp <= REG_IR;
 				IR <= REG_IR;
 			elsif(past_stall= "11") then
 				past_stall <= "10";
+				previous_inst_temp <= (OTHERs => '0');
 				IR <= (OTHERs => '0');
 			elsif(past_stall= "10") then
 				past_stall <= "00";
+				previous_inst_temp <= (OTHERs => '0');
 				IR <= (OTHERs => '0');
 			else
+				previous_inst_temp <= REG_IR;
 				IR <= REG_IR;
-			end if; 
+			end if;
+			previous_inst <= previous_inst_temp;
 			PC_OUT <= REG_PC;
+			previous_PC_temp <= REG_PC;
+			previous_PC <= previous_PC_temp;
 		elsif(falling_edge(clock)) then
 			REG_IR <= new_IR;
 			REG_PC <= mux_in;
-			
-				--PC_OUT <= mux_in;
-			
 		end if;
 
 

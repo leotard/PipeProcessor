@@ -18,7 +18,7 @@ port(
 end ALU;
 
 architecture arch of ALU is
-signal temp : std_logic_vector(31 downto 0);
+
 begin
 
 process (ALU_ready)
@@ -52,16 +52,16 @@ begin
 		elsif(control = "00011") then --DIV
 			output <= std_logic_vector(signed(A) / signed(ALU_INPUT1));
 			zero <= '0';
-		elsif(control = "00100" or control = "01111") then -- AND ANDI
+		elsif(control = "00100") then -- AND ANDI
 			output <= A and ALU_INPUT1;
 			zero <= '0';
-		elsif(control = "00101" or control = "10000") then -- OR ORI
+		elsif(control = "00101") then -- OR ORI
 			output <= A or ALU_INPUT1;
 			zero <= '0';
 		elsif(control = "00110") then -- NOR
 			output <= A nor ALU_INPUT1;
 			zero <= '0';
-		elsif(control = "00111" or control = "10001") then --XOR XORI
+		elsif(control = "00111") then --XOR XORI
 			output <= A xor ALU_INPUT1;
 			zero <= '0';
 		elsif(control = "01000") then --shift left
@@ -74,7 +74,6 @@ begin
 			output <= to_stdlogicvector(to_bitvector(A) sra to_integer(unsigned(shamt)));
 			zero <= '0';
 		elsif(control = "01011") then -- branch on equal
-temp <= std_logic_vector(signed(A) - signed(ALU_INPUT1));
 			if(std_logic_vector(signed(A) - signed(ALU_INPUT1)) = "00000000000000000000000000000000") then
 				zero <= '1';
 				output <= "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU";
