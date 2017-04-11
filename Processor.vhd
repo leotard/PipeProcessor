@@ -80,6 +80,7 @@ port(
 	jr_out : out std_logic;
 	branch_stall: out std_logic_vector(1 downto 0);
 	output_ready : out std_logic;
+	jump_addr : out std_logic_vector(31 downto 0);
 	register_array : out registers(0 to 33)
 );
 
@@ -90,6 +91,8 @@ COMPONENT instructionFetch is
 		clock: in std_logic;
 		control : in std_logic;
 		EX_stage: in std_logic_vector(31 downto 0);
+		jump : std_Logic;
+		JUMP_PC: in std_logic_vector(31 downto 0);
 		branch_stall: in std_logic_vector(1 downto 0);
 		--PC: in std_logic_vector(31 downto 0);
 		PC_out: out std_logic_vector(31 downto 0);
@@ -174,6 +177,8 @@ signal EX_MEM_REG_ALU_zero, zero_out_new : std_logic := '0';
 signal read_data2_EX : std_logic_vector(31 downto 0);
 signal EX_MEM_REG_ALU_result, alu_output_new : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
 signal EX_MEM_REG_dest_reg, selected_dest_new : std_logic_vector(4 downto 0) := "00000";
+signal JUMP_EX : std_logic:='0';
+signal JUMP_ADDR: std_logic_vector(31 downto 0);
 --signal branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, regWrite_out_new : std_logic := '0';
 
 --MEM
@@ -210,9 +215,9 @@ reg_write_out_EX, BNE_out_EX, jump_out_EX, LUI_out_EX, jr_out_EX);
 ID : Instruction_Decode port map(clock, IF_instruction, write_reg_WB, write_data_WB, regWrite_in, pc_IF_new, read_data1_new, read_data2_new, pc_new_ID, 
 alu_op_new, alu_src_new, funct_new, imm_new, shamt_new, dest_reg1_new, dest_reg2_new, dest_selector, 
 branch_out_new, memRead_out_new, memToReg_out_new, memWrite_out_new, reg_write_out_new,
-BNE_out_new, jump_out_new, LUI_out_new, jr_out_new,branch_stall_t, ALU_ready, register_array);
+BNE_out_new, jump_out_new, LUI_out_new, jr_out_new,branch_stall_t, ALU_ready, JUMP_ADDR, register_array);
 
-Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shifted, branch_stall_t, pc_IF_new, IF_instruction);
+Fetch : instructionFetch port map (clock, mux_instrStage_control_new, new_pc_shifted, jump_out_new, JUMP_ADDR, branch_stall_t, pc_IF_new, IF_instruction);
 
 MEM : mem_stage port map(clock, alu_output_new, ALU_output_MEM, read_data2_EX, memRead_out_EX, memWrite_out_EX,
  memToReg_out_EX, zero_out_new,

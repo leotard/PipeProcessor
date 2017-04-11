@@ -10,6 +10,8 @@ ENTITY instructionFetch IS
 		clock: in std_logic;
 		control : in std_logic;
 		EX_stage: in std_logic_vector(31 downto 0);
+		jump : std_Logic;
+		JUMP_PC: in std_logic_vector(31 downto 0);
 		branch_stall: in std_logic_vector(1 downto 0);
 		--PC: in std_logic_vector(31 downto 0);
 		PC_out: out std_logic_vector(31 downto 0);
@@ -54,15 +56,17 @@ ARCHITECTURE behav OF instructionFetch IS
 	
 	signal control_t:std_logic:='0';
 	signal MUX_PC : std_logic_vector(31 downto 0):="00000000000000000000000000000000";
-	signal PC, new_PC, temp_PC, REG_PC, mux_in, new_IR, REG_IR, branch_PC, PC_FOUR: std_logic_vector(31 downto 0):="00000000000000000000000000000000";
+	signal PC, new_PC, new_PC_BRANCH, temp_PC, REG_PC, mux_in, new_IR, REG_IR, branch_PC, PC_FOUR: std_logic_vector(31 downto 0):="00000000000000000000000000000000";
 	signal past_stall : std_logic_vector(1 downto 0):="00";
 	signal data_stall, current_data_stall : std_logic_vector(2 downto 0):="000";
 	signal previous_PC, previous_PC_temp, previous_inst, previous_inst_temp : std_logic_vector(31 downto 0):= (OTHERS => '0');
+	signal PC_AFTER_STALL : std_logic_vector(31 downto 0):= (OTHERS => '0');
 	
 BEGIN 
 
 ADDER : PC_adder port map(new_PC, mux_in);
-MUX   : MUXASYNC port map(control,EX_STAGE,PC_FOUR,new_PC);
+MUX_BRANCH   : MUXASYNC port map(control,EX_STAGE,PC_FOUR,new_PC_BRANCH);
+MUX_JUMP : MUXASYNC port map(jump, JUMP_PC, new_PC_BRANCH, new_PC);
 INSTR : instructionMem port map(new_PC, new_IR);
 HAZ   : HazardDetection port map (clock, REG_IR, previous_inst, current_data_stall, data_stall);
 
@@ -71,35 +75,56 @@ HAZ   : HazardDetection port map (clock, REG_IR, previous_inst, current_data_sta
 	begin
 
 		if(rising_edge(clock)) then
-			PC_FOUR <= REG_PC;
+			if(PC_AFTER_STALL /= "00000000000000000000000000000000" AND data_stall = "001") then
+				PC_FOUR <= PC_AFTER_STALL;
+			else
+				PC_FOUR <= REG_PC;
+			end if;
 			--control_t <= control;
 			--branch_PC <= EX_stage;
 			--add stall in IF because of branch 
 			if(data_stall /= "000") then
 				IR <= (OTHERs => '0');
+				if(PC_AFTER_STALL = "00000000000000000000000000000000") then
+					PC_AFTER_STALL <= std_logic_vector(to_unsigned(to_integer(unsigned(REG_PC)) - 4, PC_AFTER_STALL'length));
+				end if;
 				current_data_stall <= std_logic_vector(to_unsigned(to_integer(unsigned(data_stall)) - 1, data_stall'length));
 				previous_inst_temp <= (OTHERs => '0');
 				--replace with old PC
-				PC_FOUR <= previous_PC;
+				--PC_FOUR <= previous_PC;
 				PC_OUT <= previous_PC;
 			elsif((REG_IR(31 downto 26) = "000100" OR REG_IR(31 downto 26) = "000101") and past_stall = "00")then
 				past_stall <= "11";
 				previous_inst_temp <= REG_IR;
 				IR <= REG_IR;
+				PC_OUT <= REG_PC;
+				PC_AFTER_STALL <= (OTHERS => '0');
+			elsif((REG_IR(31 downto 26) = "000011" OR REG_IR(31 downto 26) = "000010" 
+					OR (REG_IR(31 downto 26) = "000000" AND REG_IR(5 downto 0) = "001000")) AND past_stall = "00")then -- j, JAL, JR
+				past_stall <= "10";
+				previous_inst_temp <= REG_IR;
+				IR <= REG_IR;
+				PC_OUT <= REG_PC;
+				PC_AFTER_STALL <= (OTHERS => '0');
 			elsif(past_stall= "11") then
 				past_stall <= "10";
 				previous_inst_temp <= (OTHERs => '0');
 				IR <= (OTHERs => '0');
+				PC_OUT <= REG_PC;
+				PC_AFTER_STALL <= (OTHERS => '0');
 			elsif(past_stall= "10") then
 				past_stall <= "00";
 				previous_inst_temp <= (OTHERs => '0');
 				IR <= (OTHERs => '0');
+				PC_OUT <= REG_PC;
+				PC_AFTER_STALL <= (OTHERS => '0');
 			else
 				previous_inst_temp <= REG_IR;
 				IR <= REG_IR;
+				PC_OUT <= REG_PC;
+				PC_AFTER_STALL <= (OTHERS => '0');
 			end if;
 			previous_inst <= previous_inst_temp;
-			PC_OUT <= REG_PC;
 			previous_PC_temp <= REG_PC;
 			previous_PC <= previous_PC_temp;
 		elsif(falling_edge(clock)) then

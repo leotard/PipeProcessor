@@ -68,7 +68,8 @@ mem_reg <= mem_reg_t;
 	process(instruction, op_code)
 	begin
 
-
+		jump_t <= '0';
+		mem_r_t <= '0';
 		case op_code is
 			--R type
 			when "000000" =>
@@ -142,7 +143,7 @@ mem_reg <= mem_reg_t;
 
 					--jr
 					when "001000" =>
-						alu_op_t <= "XXXXX";
+						alu_op_t <= "UUUUU";
 						jr_t <= '1';
 						jump_t <= '1';
 
@@ -241,7 +242,7 @@ mem_reg <= mem_reg_t;
 			--J type
 			--j
 			when "000010" =>
-				alu_op_t <= "XXXXX";
+				alu_op_t <= "UUUUU";
 				branch_t <= '0';
 				jump_t <= '1';
 
@@ -249,7 +250,7 @@ mem_reg <= mem_reg_t;
 			when "000011" =>
 				branch_t <= '0';
 				reg_w_t <= '1';
-				alu_op_t <= "XXXXX";
+				alu_op_t <= "UUUUU";
 				jump_t <= '1';
 
 			when others =>

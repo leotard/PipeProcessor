@@ -9,6 +9,7 @@ use work.pkg.all;
 entity registers_lib is
 	port (
 		clock : in std_logic;
+		instruction : in std_logic_vector(31 downto 0);
 		rd1 : out std_logic_vector(31 downto 0);
 		rd2 : out std_logic_vector(31 downto 0);
 		rr1 : in std_logic_vector(4 downto 0);
@@ -21,7 +22,8 @@ entity registers_lib is
 		writeEnable : in std_logic;
 		wr : in std_logic_vector(4 downto 0);
 		register_array : out registers(0 to 33);
-		wd : in std_logic_vector(31 downto 0)
+		wd : in std_logic_vector(31 downto 0);
+		reg_JAL : in std_logic_vector(31 downto 0)
 		--alu_hi_out : out std_logic_vector(31 downto 0);
 		--alu_lo_out : out std_logic_vector(31 downto 0);
 		--clock : in std_logic
@@ -46,7 +48,13 @@ begin
 		--register 0 is hardwired to 0
 		--if (clock'event and clock = '1') then
 			if(falling_edge(clock)) then
-				rd1 <= reg(to_integer(unsigned(rr1)));
+				if(instruction(31 downto 26) = "000000" AND instruction(5 downto 0) = "010000") then -- mfhi
+					rd1 <= reg(33);
+				elsif(instruction(31 downto 26) = "000000" AND instruction(5 downto 0) = "010010") then -- mflo
+					rd1 <= reg(32);
+				else
+					rd1 <= reg(to_integer(unsigned(rr1)));
+				end if;
 				rd2 <= reg(to_integer(unsigned(rr2)));
 				register_array <= reg;
 			--alu_lo_out_t <= reg(32);
@@ -67,6 +75,8 @@ begin
 				--	rd2 <= reg(to_integer(unsigned(rr2)));
 				--end if;
 				--
+			elsif(instruction(31 downto 26) = "000011" AND rising_edge(clock)) then -- write to reg 31 jump address
+				reg(31) <= reg_JAL;
 			end if;
 				--if rr1 = wr then
 					--rd1_t <= wd;

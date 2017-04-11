@@ -34,6 +34,7 @@ entity instruction_decode is
 	jr_out : out std_logic;
 	branch_stall: out std_logic_vector(1 downto 0);
 	output_ready : out std_logic; 
+	jump_addr : out std_logic_vector(31 downto 0);
 	register_array : out registers(0 to 33)
 	
 );
@@ -168,6 +169,7 @@ end component;
 component registers_lib is
 	port (
 		clock : in std_logic;
+		instruction : in std_logic_vector(31 downto 0);
 		rd1 : out std_logic_vector(31 downto 0);
 		rd2 : out std_logic_vector(31 downto 0);
 		rr1 : in std_logic_vector(4 downto 0);
@@ -180,7 +182,8 @@ component registers_lib is
 		writeEnable : in std_logic;
 		wr : in std_logic_vector(4 downto 0);
 		register_array : out registers(0 to 33);
-		wd : in std_logic_vector(31 downto 0)
+		wd : in std_logic_vector(31 downto 0);
+		reg_JAL : std_logic_vector(31 downto 0)
 		--alu_hi_out : out std_logic_vector(31 downto 0);
 		--alu_lo_out : out std_logic_vector(31 downto 0);
 		--clock : in std_logic
@@ -213,6 +216,7 @@ signal stall :std_logic_vector(4 downto 0);
 signal sign_extend_out_new, sign_extend_ID_EX : std_logic_vector(31 downto 0);
 
 signal BNE_out_new, jump_out_new, jr_out_new, LUI_out_new : std_logic;
+signal jump_addr_reg : std_logic_vector(31 downto 0);
 signal BNE_out_new_ID_EX, jump_out_new_ID_EX, jr_out_new_ID_EX, LUI_out_new_ID_EX : std_logic;
 
 --signal register_array_ID, register_array_REG : registers(0 to 33):= ((others=> (others=>'0')));
@@ -225,10 +229,10 @@ begin
 
 
 
-control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel_new, BNE_out_new, jump_out_new, jr_out_new, branch_out_new, LUI_out_new, alu_op_new, alu_src_new, memRead_out, memWrite_out_new, reg_write_out_new, memToReg_out_new);
+control_unit : control port map(instruction(31 downto 26), instruction(5 downto 0), dest_reg_sel_new, BNE_out_new, jump_out_new, jr_out_new, branch_out_new, LUI_out_new, alu_op_new, alu_src_new, memRead_out_new, memWrite_out_new, reg_write_out_new, memToReg_out_new);
 
-reg : registers_lib port map(clock, read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
-regWrite_in, wr_in, register_array, wd_in);
+reg : registers_lib port map(clock, instruction, read_data1_new, read_data2_new, instruction(25 downto 21), instruction(20 downto 16),
+regWrite_in, wr_in, register_array, wd_in, pc_in);
 
 sign : sign_extender port map(instruction(15 downto 0), sign_extend_out_new);
 
@@ -282,12 +286,22 @@ end if;
 	reg_write_out <= reg_write_out_new_ID_EX;
   shamt <= shamt_new_ID_EX;
   funct <= funct_new_ID_EX;
+	jump_addr <= jump_addr_REG;
   
   imm <= sign_extend_ID_EX;
 
 
 
 elsif(falling_edge(clock)) then
+	
+	--Calculate jump addr
+	if(instruction(5 downto 0) ="001000") then
+		jump_addr_REG <= read_data1_new;
+	else
+		jump_addr_REG(31 downto 27) <= PC_in(31 downto 27);
+		jump_addr_REG(26 downto 0) <= std_logic_vector(shift_left(unsigned(instruction(26 downto 0)), 2)); 
+	end if;
+	
 	output_ready <= '0';
 
 	--put inputs in register for read

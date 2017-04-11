@@ -69,15 +69,15 @@ process (clock)
 begin
 	 
 		if (falling_edge(clock)) then
-				if (mem_read='1') then
-					REG_readdata <= readdata;
-				end if;
+			if (mem_r='1') then
+				REG_readdata <= readdata;
+			end if;
 			REG_addrout <= addr;
 			REG_mem_toRegout <= mem_toReg;
 			REG_selected_dest_memout <= selected_dest_mem;
 			REG_regWrite_memout <= regWrite_mem;
 		elsif(rising_edge(clock)) then
-			if (mem_read='1') then
+			if (mem_r='1') then
 				read_data <= REG_readdata;
 			end if;
 			addr_out <= REG_addrout;

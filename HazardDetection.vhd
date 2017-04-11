@@ -137,7 +137,7 @@ begin
 		dest_reg_3(7 downto 5) <= std_logic_vector(to_unsigned(to_integer(unsigned(var_dest_reg_2(7 downto 5))) - 1, 3));
 	end if;
 	
-	if(instruction(31 downto 26) = R_TYPE AND instruction /= "00000000000000000000000000000000") then
+	if(instruction(31 downto 26) = R_TYPE AND instruction /= "00000000000000000000000000000000" AND instruction(5 downto 0) /="001000") then
 		dest_reg_1(7 downto 5) <= "011";
 		dest_reg_1(4 downto 0) <= instruction(15 downto 11);
 	elsif(instruction(31 downto 26) = SLTI OR instruction(31 downto 26) = ADDI OR instruction(31 downto 26) = LW) then
