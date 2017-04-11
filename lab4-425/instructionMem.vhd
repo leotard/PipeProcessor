@@ -1,0 +1,66 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+use STD.textio.all; 
+use ieee.std_logic_textio.all;
+use ieee.numeric_std.all;
+
+
+
+ENTITY instructionMem IS
+	port(
+		PC: in std_logic_vector(31 downto 0);
+		instr_reg: out std_logic_vector(31 downto 0)
+
+	);
+		
+END instructionMem;
+
+
+
+ARCHITECTURE beh OF instructionMem IS
+
+
+	signal total_instr: integer;
+	signal DATA_BITS: integer:=32;
+	signal DEPTH:integer := 9996;
+	subtype word_t is std_logic_vector(DATA_BITS - 1 downto 0);
+	type instr_set_t is array(0 to DEPTH - 1) of word_t;
+	
+
+impure function readMemFile(FileName : STRING) return instr_set_t is
+	file FileHandle       : TEXT open READ_MODE is FileName;
+  	variable CurrentLine  : LINE;
+	variable counter      : integer := 0;
+	variable TempWord     : std_logic_vector(DATA_BITS - 1 downto 0);
+	variable Result       : instr_set_t := (others => (others => '0'));
+
+begin 
+	while not endfile(FileHandle) loop --till the end of file is reached continue.
+		readline (FileHandle,CurrentLine);  --Read the whole line from the file
+		   --Read the contents of the line from  the file into a variable.
+		READ (CurrentLine,TempWord);
+		Result(counter) := TempWord;
+		counter := counter + 1;
+	end loop;
+	
+	
+	return Result;
+end function;
+	
+	signal instr_set    : instr_set_t    := readMemFile("program.txt");
+    
+BEGIN
+
+   --Read process
+    process (PC)
+	variable pc_integer: integer;
+	begin
+		pc_integer:=to_integer(unsigned(PC));
+		pc_integer:= pc_integer/4;
+		instr_reg <= instr_set(pc_integer);
+    end process;
+
+	
+
+end beh;
+

@@ -1,0 +1,282 @@
+P:/lab4-425/Pipeline_processor.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/Pipeline_processor.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity pipeline_processor
+-- Compiling architecture arch of pipeline_processor
+
+} {} {}} P:/lab4-425/InstructionDecode.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/InstructionDecode.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package pkg
+-- Compiling entity instruction_decode
+-- Compiling architecture arch of instruction_decode
+
+} {} {}} P:/lab4-425/pc_adder_shifter.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/pc_adder_shifter.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity pc_adder_shifter
+-- Compiling architecture arch of pc_adder_shifter
+
+} {} {}} P:/lab4-425/MUXASYNC.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/MUXASYNC.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity MUXASYNC
+-- Compiling architecture arch of MUXASYNC
+
+} {} {}} P:/lab4-425/HazardDetection.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/HazardDetection.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity HazardDetection
+-- Compiling architecture arch of HazardDetection
+
+} {} {}} P:/lab4-425/control.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/control.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity control
+-- Compiling architecture arch of control
+
+} {} {}} P:/lab4-425/memory.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/memory.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package pkg
+-- Compiling entity memory
+-- Compiling architecture rtl of memory
+
+} {} {}} P:/lab4-425/instructionMem.vhd {2 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/instructionMem.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package std_logic_textio
+-- Loading package NUMERIC_STD
+-- Compiling entity instructionMem
+-- Compiling architecture beh of instructionMem
+** Warning: [9] P:/lab4-425/instructionMem.vhd(26): (vcom-1013) Subtype "word_t" depends on value of signal "DATA_BITS".
+
+** Warning: [9] P:/lab4-425/instructionMem.vhd(27): (vcom-1013) Type "instr_set_t" depends on value of signal "DEPTH".
+
+
+} {} {}} P:/lab4-425/ID_EX.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/ID_EX.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity ID_EX
+-- Compiling architecture behavior of ID_EX
+
+} {} {}} P:/lab4-425/execution_tb.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/execution_tb.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity execution_tb
+-- Compiling architecture behavior of execution_tb
+
+} {} {}} P:/lab4-425/instructionFetch.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/instructionFetch.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package std_logic_textio
+-- Loading package NUMERIC_STD
+-- Compiling entity instructionFetch
+-- Compiling architecture behav of instructionFetch
+
+} {} {}} P:/lab4-425/EXECUTION.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/EXECUTION.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity EXECUTION
+-- Compiling architecture arch of EXECUTION
+
+} {} {}} P:/lab4-425/writeBack.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/writeBack.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity writeBack
+-- Compiling architecture arch of writeBack
+
+} {} {}} P:/lab4-425/processor_tb.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/processor_tb.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package std_logic_textio
+-- Loading package pkg
+-- Compiling entity processor_tb
+-- Compiling architecture behavior of processor_tb
+
+} {} {}} P:/lab4-425/sign_extender.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/sign_extender.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity sign_extender
+-- Compiling architecture arch of sign_extender
+
+} {} {}} P:/lab4-425/dest_mux_comp.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/dest_mux_comp.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity DEST_MUX_comp
+-- Compiling architecture arch of DEST_MUX_comp
+
+} {} {}} P:/lab4-425/EX_MEM_REG.vhd {2 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/HazardDetection.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+** Warning: (vcom-6) -- Waiting for lock by "oeydt@025BOULE, pid = 7088
+". Lockfile is "P:/lab4-425/work/_lock".
+
+-- Loading package NUMERIC_STD
+-- Compiling entity EX_MEM_REG
+-- Compiling architecture arch of EX_MEM_REG
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity HazardDetection
+-- Compiling architecture arch of HazardDetection
+
+} {} {}} P:/lab4-425/registers.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/registers.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package pkg
+-- Compiling entity registers_lib
+-- Compiling architecture behavioral of registers_lib
+
+} {} {}} P:/lab4-425/Processor.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/Processor.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package pkg
+-- Compiling entity processor
+-- Compiling architecture arch of processor
+
+} {} {}} {P:/lab4-425/DEST_MUX .vhd} {1 {vcom -work work -2002 -explicit -stats=none {P:/lab4-425/DEST_MUX .vhd}
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity DEST_MUX
+-- Compiling architecture arch of DEST_MUX
+
+} {} {}} P:/lab4-425/pkg.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/pkg.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling package pkg
+-- Compiling package body pkg
+-- Loading package pkg
+
+} {} {}} P:/lab4-425/mem_stage.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/mem_stage.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Loading package pkg
+-- Loading package std_logic_textio
+-- Compiling entity mem_stage
+-- Compiling architecture behav of mem_stage
+
+} {} {}} P:/lab4-425/PC_adder.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/PC_adder.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity PC_adder
+-- Compiling architecture behavior of PC_adder
+
+} {} {}} P:/lab4-425/HazardControl.vhd {0 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/HazardControl.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity HazardControl
+-- Compiling architecture behaviour of HazardControl
+** Error: P:/lab4-425/HazardControl.vhd(19): near ":=": expecting ':'
+** Error: P:/lab4-425/HazardControl.vhd(23): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(25): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(26): Integer literal 1 is not of type (error).
+** Error: P:/lab4-425/HazardControl.vhd(29): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(29): Illegal concurrent statement.
+** Error: P:/lab4-425/HazardControl.vhd(31): Integer literal 0 is not of type (error).
+** Error: P:/lab4-425/HazardControl.vhd(32): Illegal concurrent statement.
+** Error: P:/lab4-425/HazardControl.vhd(33): Illegal target for signal assignment.
+** Error: P:/lab4-425/HazardControl.vhd(33): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(36): Integer literal 1 is not of type (error).
+** Error: P:/lab4-425/HazardControl.vhd(37): Illegal target for signal assignment.
+** Error: P:/lab4-425/HazardControl.vhd(37): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(41): Illegal target for signal assignment.
+** Error: P:/lab4-425/HazardControl.vhd(41): (vcom-1136) Unknown identifier "isStall_t".
+
+** Error: P:/lab4-425/HazardControl.vhd(45): VHDL Compiler exiting
+
+} {9.0 11.0 12.0 13.0 14.0 16.0 17.0 22.0 23.0 26.0 27.0 29.0 30.0 31.0} {}} P:/lab4-425/MUXFIVE.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/MUXFIVE.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity MUXFIVE
+-- Compiling architecture arch of MUXFIVE
+
+} {} {}} P:/lab4-425/muxtwo.vhd {1 {vcom -work work -2002 -explicit -stats=none P:/lab4-425/muxtwo.vhd
+Model Technology ModelSim ALTERA vcom 10.3d Compiler 2014.10 Oct  7 2014
+-- Loading package STANDARD
+-- Loading package TEXTIO
+-- Loading package std_logic_1164
+-- Loading package NUMERIC_STD
+-- Compiling entity MUXTWO
+-- Compiling architecture arch of MUXTWO
+
+} {} {}}

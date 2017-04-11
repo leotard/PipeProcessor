@@ -1,0 +1,84 @@
+process(clock)
+
+begin
+if(rising_edge(clock)) then
+
+	--Output old values
+	
+	--IF/ID
+	instruction_out <= IF_REG_instruction;
+	PC_out_IF <= IF_REG_PC;
+
+	--ID/EX
+	
+	read_data1_new_out <= read_data1_ID_EX;
+	read_data2_new_out <= read_data2_ID_EX;
+	pc_new_ID_out <= pc_new_ID_EX;
+	alu_op_new_out <= alu_op_new_ID_EX;
+	alu_src_new_out <= alu_src_new_ID_EX ;
+	funct_new_out <= funct_new_ID_EX;
+	imm_new_out <= imm_new_ID_EX;
+	shamt_new_out <= shamt_new_ID_EX;
+	dest_reg1_new_out <= dest_reg1_new_ID_EX;
+	dest_reg2_new_out <= dest_reg2_new_ID_EX;
+	dest_reg_sel_new_out <= dest_reg_sel_new_ID_EX;
+	branch_out_new_out <= branch_out_new_ID_EX;
+	memRead_out_new_out <= memRead_out_new_ID_EX;
+	memToReg_out_new_out  <= memToReg_out_new_ID_EX;
+	memWrite_out_new_out <= memWrite_out_new_ID_EX;
+	reg_write_out_new_out <= reg_write_out_new_ID_EX;
+
+	--EX
+	new_pc_shifted_out <= EX_MEM_REG_PC;
+	zero_out_new_out <= EX_MEM_REG_ALU_zero;
+	alu_output_new_out <= EX_MEM_REG_ALU_result;
+	selected_dest_new_out <= EX_MEM_REG_dest_reg;
+	alu_output_out <= EX_MEM_REG_ALU_result;
+
+	branch_out_new_out <= branch_EX_MEM;
+	memRead_out_new_out <= memRead_EX_MEM;
+	memToReg_out_new_out <= memToReg_EX_MEM;
+	memWrite_out_new_out <= memWrite_EX_MEM;
+	reg_write_out_new_out <= regWrite_EX_MEM;
+	
+elsif(falling_edge(clock)) then
+
+	--Put new values in registers
+
+	--IF/ID
+	IF_REG_instruction <= instruction_in;
+	IF_REG_PC <= PC_incremented;
+
+	--ID/EX
+	
+	read_data1_ID_EX <= read_data1_new;
+	read_data2_ID_EX <= read_data2_new;
+	pc_new_ID_EX <= pc_out_IF;
+	alu_op_new_ID_EX <= alu_op_new;
+	alu_src_new_ID_EX <= alu_src_new;
+	funct_new_ID_EX <= funct_new;
+	imm_new_ID_EX <= imm_new;
+	shamt_new_ID_EX <= shamt_new;
+	dest_reg1_new_ID_EX <= dest_reg1_new;
+	dest_reg2_new_ID_EX <= dest_reg2_new;
+	dest_reg_sel_new_ID_EX <= dest_reg_sel_new;
+	branch_out_new_ID_EX <= branch_out_new;
+	memRead_out_new_ID_EX <= memRead_out_new;
+	memToReg_out_new_ID_EX <= memToReg_out_new;
+	memWrite_out_new_ID_EX <= memWrite_out_new;
+	reg_write_out_new_ID_EX <= reg_write_out_new;
+
+	--EX
+
+
+	EX_MEM_REG_PC  <= new_pc_shifted;
+	EX_MEM_REG_ALU_zero <= zero_out_new;
+	EX_MEM_REG_ALU_result <= alu_output_new;
+	EX_MEM_REG_dest_reg <= selected_dest_new;
+
+	branch_EX_MEM <= branch_out_new;
+	memRead_EX_MEM <= memRead_out_new;
+	memToReg_EX_MEM <= memToReg_out_new;
+	memWrite_EX_MEM <= memWrite_out_new;
+	regWrite_EX_MEM <= reg_Write_out_new;
+end if;

@@ -1,0 +1,49 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity EX_MEM_REG is
+port(
+	clock : in std_logic;
+	PC_adder_shifter_new : in std_logic_vector(31 downto 0);
+	ALU_zero_new : in std_logic;
+	ALU_result_new : in std_logic_vector(31 downto 0);
+	dest_reg_new : in std_logic_vector(4 downto 0);
+	PC_adder_shifter_out : out std_logic_vector(31 downto 0);
+	ALU_zero_out : out std_logic;
+	ALU_result_out : out std_logic_vector(31 downto 0);
+	dest_reg_out : out std_logic_vector(4 downto 0)
+);
+
+end EX_MEM_REG;
+
+architecture arch of EX_MEM_REG is
+
+signal PC_adder_shifter_old : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
+signal ALU_zero_old : std_logic := '0';
+signal ALU_result_old : std_logic_vector(31 downto 0) := "00000000000000000000000000000000";
+signal dest_reg_old : std_logic_vector(4 downto 0) := "00000";
+
+begin
+
+process(clock)
+
+begin
+
+if(rising_edge(clock)) then
+	--Output old values
+	PC_adder_shifter_out <= PC_adder_shifter_old;
+	ALU_zero_out <= ALU_zero_old;
+	ALU_result_out <= ALU_result_old;
+	dest_reg_out <= dest_reg_old;
+elsif(falling_edge(clock)) then
+	--Put new values in register
+	PC_adder_shifter_old <= PC_adder_shifter_new;
+	ALU_zero_old <= ALU_zero_new;
+	ALU_result_old <= ALU_result_new;
+	dest_reg_old <= dest_reg_new;
+end if;
+
+end process;
+
+end arch;

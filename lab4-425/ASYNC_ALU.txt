@@ -1,0 +1,21 @@
+output <= std_logic_vector(signed(A) + signed(B)) when (control = "00000" and ALU_MUX = '0') else
+		std_logic_vector(signed(A) + signed(imm)) when (control = "00000" and ALU_MUX = '1') else
+		 std_logic_vector(signed(A) - signed(B)) when control = "00001" else
+		std_logic_vector(signed(A) * signed(ALU_INPUT1))(31 downto 0) when control = "00011" else
+		std_logic_vector(signed(A) / signed(ALU_INPUT1)) when control = "00011" else
+		A and ALU_INPUT1 when (control = "00100" or control = "01111") else
+		A or ALU_INPUT1 when (control = "00101" or control = "10000") else
+		A nor ALU_INPUT1 when control = "00110" else
+		A xor ALU_INPUT1 when (control = "00111" or control = "10001") else
+		to_stdlogicvector(to_bitvector(A) sll to_integer(unsigned(ALU_INPUT1))) when control = "01000" else
+		to_stdlogicvector(to_bitvector(A) srl to_integer(unsigned(ALU_INPUT1))) when control = "01001" else
+		to_stdlogicvector(to_bitvector(A) sra to_integer(unsigned(ALU_INPUT1))) when control = "01010" else
+		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" when control = "01011" else
+		"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" when control = "01100" else
+		"00000000000000000000000000000001" when ((control = "01101" or control = "01110") and signed(A) < signed(ALU_INPUT1)) else
+		"00000000000000000000000000000000" when ((control = "01101" or control = "01110") and signed(A) >= signed(ALU_INPUT1)) else
+		ALU_INPUT1(15 downto 0) & "0000000000000000" when control = "01111" else
+		"" when control = "10000" else
+		"" control = "10001" else
+		"";
+	zero <= 
