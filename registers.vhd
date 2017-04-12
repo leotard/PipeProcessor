@@ -51,7 +51,7 @@ begin
 				if(instruction(31 downto 26) = "000000" AND instruction(5 downto 0) = "010000") then -- mfhi
 					rd1 <= reg(33);
 				elsif(instruction(31 downto 26) = "000000" AND instruction(5 downto 0) = "010010") then -- mflo
-					rd1 <= reg(32);
+					rd1 <= reg(32);				
 				else
 					rd1 <= reg(to_integer(unsigned(rr1)));
 				end if;
@@ -59,7 +59,8 @@ begin
 				register_array <= reg;
 			--alu_lo_out_t <= reg(32);
 			--alu_hi_out_t <= reg(33);
-
+			elsif(wr = "11111" AND rising_edge(clock)) then --MULT, DIV
+				reg(32) <= wd;
 			elsif (writeEnable = '1' and to_integer(unsigned(wr)) /= 0 and rising_edge(clock)) then
 				reg(to_integer(unsigned(wr))) <= wd;
 				--if(to_integer(unsigned(rr1)) = to_integer(unsigned(wr))) then

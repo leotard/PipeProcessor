@@ -46,7 +46,7 @@ ARCHITECTURE behav OF instructionFetch IS
 
 	component HazardDetection is
 		port(
-			clock : in std_logic;
+			flag : in std_logic;
 			instruction: in std_logic_vector(31 downto 0);
 			previous_inst : in std_logic_vector(31 downto 0);
 			current_data_stall : in std_logic_vector(2 downto 0);
@@ -54,13 +54,13 @@ ARCHITECTURE behav OF instructionFetch IS
 		);
 	end component;
 	
-	signal control_t:std_logic:='0';
+	signal flag, control_t:std_logic:='0';
 	signal MUX_PC : std_logic_vector(31 downto 0):="00000000000000000000000000000000";
 	signal PC, new_PC, new_PC_BRANCH, temp_PC, REG_PC, mux_in, new_IR, REG_IR, branch_PC, PC_FOUR: std_logic_vector(31 downto 0):="00000000000000000000000000000000";
 	signal past_stall : std_logic_vector(1 downto 0):="00";
 	signal data_stall, current_data_stall : std_logic_vector(2 downto 0):="000";
 	signal previous_PC, previous_PC_temp, previous_inst, previous_inst_temp : std_logic_vector(31 downto 0):= (OTHERS => '0');
-	signal PC_AFTER_STALL : std_logic_vector(31 downto 0):= (OTHERS => '0');
+	signal PC_AFTER_STALL, hazard_inst : std_logic_vector(31 downto 0):= (OTHERS => '0');
 	
 BEGIN 
 
@@ -68,27 +68,35 @@ ADDER : PC_adder port map(new_PC, mux_in);
 MUX_BRANCH   : MUXASYNC port map(control,EX_STAGE,PC_FOUR,new_PC_BRANCH);
 MUX_JUMP : MUXASYNC port map(jump, JUMP_PC, new_PC_BRANCH, new_PC);
 INSTR : instructionMem port map(new_PC, new_IR);
-HAZ   : HazardDetection port map (clock, REG_IR, previous_inst, current_data_stall, data_stall);
+HAZ   : HazardDetection port map (flag, hazard_inst, previous_inst, current_data_stall, data_stall);
 
 	process(clock)
-	variable var_data_stall: std_logic_vector(2 downto 0);
+	variable var_data_stall, var_current_data_stall: std_logic_vector(2 downto 0);
+	variable var_PC_AFTER_STALL : std_logic_vector(31 downto 0);
 	begin
 
 		if(rising_edge(clock)) then
-			if(PC_AFTER_STALL /= "00000000000000000000000000000000" AND data_stall = "001") then
-				PC_FOUR <= PC_AFTER_STALL;
-			else
-				PC_FOUR <= REG_PC;
-			end if;
+			PC_FOUR <= REG_PC;
 			--control_t <= control;
 			--branch_PC <= EX_stage;
 			--add stall in IF because of branch 
-			if(data_stall /= "000") then
+			if(data_stall /= "000" and past_stall = "00") then
 				IR <= (OTHERs => '0');
 				if(PC_AFTER_STALL = "00000000000000000000000000000000") then
-					PC_AFTER_STALL <= std_logic_vector(to_unsigned(to_integer(unsigned(REG_PC)) - 4, PC_AFTER_STALL'length));
+					var_PC_AFTER_STALL := std_logic_vector(to_unsigned(to_integer(unsigned(REG_PC)) - 4, PC_AFTER_STALL'length));
+					PC_AFTER_STALL <= var_PC_AFTER_STALL;
+					if(data_stall = "001") then
+						flag <= '1';
+						PC_FOUR <= var_PC_AFTER_STALL;
+					end if;
+				elsif(data_stall = "001") then
+					--flag <= '1';
+					PC_FOUR <= PC_AFTER_STALL;
+					PC_AFTER_STALL <= (OTHERS => '0');
 				end if;
-				current_data_stall <= std_logic_vector(to_unsigned(to_integer(unsigned(data_stall)) - 1, data_stall'length));
+				var_current_data_stall := std_logic_vector(to_unsigned(to_integer(unsigned(data_stall)) - 1, data_stall'length)); 
+				current_data_stall <= var_current_data_stall;
+				
 				previous_inst_temp <= (OTHERs => '0');
 				--replace with old PC
 				--PC_FOUR <= previous_PC;
@@ -128,6 +136,12 @@ HAZ   : HazardDetection port map (clock, REG_IR, previous_inst, current_data_sta
 			previous_PC_temp <= REG_PC;
 			previous_PC <= previous_PC_temp;
 		elsif(falling_edge(clock)) then
+			if(flag ='1') then
+				hazard_inst <= (OTHERs => '0');
+			else
+				hazard_inst <= new_IR;
+			end if;
+			flag <='0';
 			REG_IR <= new_IR;
 			REG_PC <= mux_in;
 		end if;

@@ -6,7 +6,7 @@ use ieee.numeric_std.all;
 
 ENTITY HazardDetection IS
 	port(
-		clock : in std_logic;
+		flag : in std_logic;
 		instruction: in std_logic_vector(31 downto 0);
 		previous_inst: in std_logic_vector(31 downto 0);
 		current_data_stall: in std_logic_vector(2 downto 0);
@@ -41,7 +41,7 @@ variable op_code : std_logic_vector(5 downto 0);
 variable arg1, arg2, arg3: std_logic_vector(4 downto 0);
 variable var_stall, var_past_stall: std_logic_vector(2 downto 0);
 variable var_stall_temp_1, var_stall_temp_2 : std_logic_vector(2 downto 0);
-variable var_dest_reg_1, var_dest_reg_2:std_logic_vector(7 downto 0);
+variable var_dest_reg_1, var_dest_reg_2, var_dest_reg_3:std_logic_vector(7 downto 0);
 
 begin
 
@@ -80,7 +80,7 @@ begin
 					
 				else
 					if(past_stall /= "000") then
-						var_stall := var_past_stall;
+						var_stall := current_data_stall;
 					else
 						var_stall := "000";
 					end if;
@@ -101,7 +101,7 @@ begin
 					
 				else
 					if(past_stall /= "000") then
-						var_stall := var_past_stall;
+						var_stall := current_data_stall;
 					else
 						var_stall := "000";
 					end if;
@@ -111,7 +111,7 @@ begin
 			end if;
 	else
 		if(past_stall /= "000") then
-			var_stall := var_past_stall;
+			var_stall := current_data_stall;
 		else
 			var_stall := "000";
 		end if;
@@ -128,8 +128,9 @@ begin
 
 	var_dest_reg_1 := dest_reg_1;
 	var_dest_reg_2 := dest_reg_2;
-	dest_reg_2(4 downto 0) <= var_dest_reg_1(4 downto 0);
-	dest_reg_3(4 downto 0) <= var_dest_reg_2(4 downto 0);
+	var_dest_reg_3 := dest_reg_3;
+	dest_reg_2(4 downto 0) <= dest_reg_1(4 downto 0);
+	dest_reg_3(4 downto 0) <= dest_reg_2(4 downto 0);
 	if(dest_reg_1(7 downto 5) /= "000") then
 		dest_reg_2(7 downto 5) <= std_logic_vector(to_unsigned(to_integer(unsigned(var_dest_reg_1(7 downto 5))) - 1, 3));
 	end if;
@@ -144,7 +145,9 @@ begin
 		dest_reg_1(7 downto 5) <= "011";
 		dest_reg_1(4 downto 0) <= instruction(20 downto 16);
 	else
-		dest_reg_1 <= "00011111"; -- Store impossible register
+		dest_reg_1(4 downto 0) <= var_dest_reg_2(4 downto 0);
+		dest_reg_2(4 downto 0) <= var_dest_reg_3(4 downto 0);
+		--dest_reg_1 <= "00011111"; -- Store impossible register
 	end if;
 
 end process;

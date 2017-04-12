@@ -70,12 +70,14 @@ mem_reg <= mem_reg_t;
 
 		jump_t <= '0';
 		mem_r_t <= '0';
+		mem_w_t <= '0';
 		case op_code is
 			--R type
 			when "000000" =>
 				reg_w_t <= '1';
 				reg_dst_t <= '1';
 				mem_reg_t <= '0';
+				alu_src_t <= '0';
 
 				case instruction is
 					--add
@@ -89,12 +91,14 @@ mem_reg <= mem_reg_t;
 					--mult
 					when "011000" =>
 						alu_op_t <= "00010";
-						reg_w_t <= '0';
+						reg_w_t <= '1';
+						alu_src_t <= '0';
 						--alu_lh_w_t <= '1';
 
 					--div
 					when "011010" =>
-						reg_w_t <= '0';
+						reg_w_t <= '1';
+						alu_src_t <= '0';
 						alu_op_t <= "00011";
 						--alu_lh_w_t <= '1';
 
@@ -121,11 +125,13 @@ mem_reg <= mem_reg_t;
 					--mfhi
 					when "010000" =>
 						alu_op_t <= "10000";
+						reg_dst_t <= '1';
 						--alu_lh_r_t <= "10";
 
 					--mflo
 					when "010010" =>
 						alu_op_t <= "10001";
+						reg_dst_t <= '1';
 						--alu_lh_r_t <= "01";
 
 					--sll

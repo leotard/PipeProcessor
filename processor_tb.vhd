@@ -103,7 +103,7 @@ begin
 	--wait for clk_period/2;
 	
 
-	wait for 10*clk_period;
+	wait for 30*clk_period;
 	
 	
 	success <= WrittenRegFile("register_file.txt", registers_out);
